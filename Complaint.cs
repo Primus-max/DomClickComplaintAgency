@@ -18,16 +18,26 @@ namespace DomclickComplaint
             ConnectionDriver connection = new();
             _driver = await connection.GetDriverAsync();
 
+            try
+            {
+                _driver.Navigate().GoToUrl("https://domclick.ru");
+                _driver.Manage().Window.Maximize();
+            }
+            catch (Exception)
+            {
 
-            _driver.Navigate().GoToUrl("https://domclick.ru");
+                throw;
+            }
 
-            _driver.Manage().Window.Maximize();
 
-            // Находим родительский элемент
-            IWebElement parentElement = _driver.FindElement(By.XPath("//div[@data-e2e-id='topline__sign-in']"));
+            Authorization authorization = new();
+            bool isAuthSeccess = await authorization.AuthenticateAsync(_driver);
 
-            // Кликаем на родительском элементе
-            parentElement.Click();
+
+            if (isAuthSeccess)
+            {
+
+            }
         }
     }
 }
