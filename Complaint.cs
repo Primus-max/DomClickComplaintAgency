@@ -23,10 +23,9 @@ namespace DomclickComplaint
                 _driver.Navigate().GoToUrl("https://domclick.ru");
                 _driver.Manage().Window.Maximize();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                Console.WriteLine($"Не удалось перейти по указанному адресу по причине: {ex.Message}");
             }
 
 

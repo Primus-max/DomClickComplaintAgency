@@ -8,7 +8,9 @@ namespace DomclickComplaint
 
         static async Task Main(string[] args)
         {
+            Complaint complaint = new();
 
+            complaint.SendComplaint();
 
 
         }
