@@ -26,7 +26,7 @@ namespace DomclickComplaint
                 _password = authData?.Password;
 
                 // Находим кнопку авторизации и кликаем
-                IWebElement authBotton = driver.FindElement(By.XPath("//div[@data-e2e-id='topline__sign-in']"));                
+                IWebElement authBotton = driver.FindElement(By.XPath("//div[@data-e2e-id='topline__sign-in']"));
                 authBotton.Click();
 
                 // код авторизации, использующий _driver, _phoneNumber и _password
@@ -36,6 +36,7 @@ namespace DomclickComplaint
             catch (Exception ex)
             {
                 Console.WriteLine($"Ошибка авторизации: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
         }
