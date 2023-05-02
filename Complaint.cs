@@ -10,6 +10,7 @@ namespace DomclickComplaint
 {
     public class Complaint
     {
+        Uri baseUri = new("https://domclick.ru");
         private UndetectedChromeDriver? _driver;
 
         public async void SendComplaint()
@@ -20,7 +21,7 @@ namespace DomclickComplaint
 
             try
             {
-                _driver.Navigate().GoToUrl("https://domclick.ru");
+                _driver.Navigate().GoToUrl(baseUri);
                 _driver.Manage().Window.Maximize();
             }
             catch (Exception ex)
