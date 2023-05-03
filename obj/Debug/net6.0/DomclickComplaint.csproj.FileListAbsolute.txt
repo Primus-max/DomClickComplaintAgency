@@ -17,3 +17,5 @@ Z:\Programming\ProjectC#\DomclickComplaint\obj\Debug\net6.0\refint\DomclickCompl
 Z:\Programming\ProjectC#\DomclickComplaint\obj\Debug\net6.0\DomclickComplaint.pdb
 Z:\Programming\ProjectC#\DomclickComplaint\obj\Debug\net6.0\DomclickComplaint.genruntimeconfig.cache
 Z:\Programming\ProjectC#\DomclickComplaint\obj\Debug\net6.0\ref\DomclickComplaint.dll
+Z:\Programming\ProjectC#\DomclickComplaint\bin\Debug\net6.0\SeleniumExtras.WaitHelpers.dll
+Z:\Programming\ProjectC#\DomclickComplaint\bin\Debug\net6.0\authData.json

@@ -33,7 +33,6 @@ namespace DomclickComplaint
             Authorization authorization = new();
             bool isAuthSeccess = await authorization.AuthenticateAsync(_driver);
 
-
             if (isAuthSeccess)
             {
 
