@@ -37,13 +37,15 @@ namespace DomclickComplaint
                 _password = authData?.Password;
 
 
-                // Находим кнопку авторизации
+                // Устанавливаем ожидание для всех ээлементов
                 var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
+                // Находим кнопку авторизации
                 var authButton = wait.Until(ExpectedConditions.ElementExists(By.XPath("//div[@data-e2e-id='topline__sign-in']")));
-                               
+
                 // Перемещаю курсор к кнопке и кликаю
                 var action = new Actions(driver);
-                action.MoveToElement(authButton).Perform();                
+                action.MoveToElement(authButton).Perform();
                 authButton.Click();
 
                 // Получаю input для ввода телефона для авторизации
@@ -59,14 +61,32 @@ namespace DomclickComplaint
                 Thread.Sleep(1000);
 
                 // Получаю кнопку отправки номера авторизации 
-                var submitButton = driver.FindElement(By.CssSelector("button[data-e2e-id='topline-login-form__submit-button']"));
+
+                var submitButton = wait.Until(ExpectedConditions.ElementExists(By.CssSelector("button[data-e2e-id='topline-login-form__submit-button']")));
 
                 // Перемещаю курсор к кнопке и кликаю
-                action.MoveToElement(authButton).Perform();
+                action.MoveToElement(submitButton).Perform();
                 submitButton.Click();
                 //phoneNumberInput.Submit();
 
-                
+                Thread.Sleep(1000);
+
+                // Получаю input для вставки пароля и вставляю
+                var passwordInput = wait.Until(ExpectedConditions.ElementExists(By.Id("topline-login-form__password-input")));
+                passwordInput.SendKeys(_password);
+
+                Thread.Sleep(1000);
+
+                // Получаю кнопку для продтверждения пароля
+                var loginButton = wait.Until(ExpectedConditions.ElementExists(By.CssSelector("button[data-e2e-id='topline-login-form__submit-button']")));
+
+                Thread.Sleep(1000);
+
+                // Перемещаю курсор к кнопке и кликаю
+                //action.MoveToElement(loginButton).Perform();
+                loginButton.Click();
+
+
                 return true;
             }
             catch (Exception ex)
@@ -75,6 +95,6 @@ namespace DomclickComplaint
                 Console.WriteLine(ex.StackTrace);
                 return false;
             }
-        }    
+        }
     }
 }
