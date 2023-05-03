@@ -10,6 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+//TODO Сделать движение курсора
+//TODO Сделать для всех задержек рандомное время
+
 namespace DomclickComplaint
 {
     public class Authorization
@@ -34,43 +37,36 @@ namespace DomclickComplaint
                 _password = authData?.Password;
 
 
-                // Находим кнопку авторизации и кликаем
+                // Находим кнопку авторизации
                 var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 var authButton = wait.Until(ExpectedConditions.ElementExists(By.XPath("//div[@data-e2e-id='topline__sign-in']")));
-
-                //int coorX = authButton.Location.X;
-                //int coorY = authButton.Location.Y;
-
+                               
+                // Перемещаю курсор к кнопке и кликаю
                 var action = new Actions(driver);
-                action.MoveToElement(authButton).Perform();
+                action.MoveToElement(authButton).Perform();                
                 authButton.Click();
 
-                // await Task.Delay(1000);
-
+                // Получаю input для ввода телефона для авторизации
                 var phoneNumberInput = wait.Until(ExpectedConditions.ElementExists(By.Id("topline-login-form__phone-input")));
                 // phoneNumberInput.SendKeys(_phoneNumber);
+                // По цифре ввожу номер телефона в поле
                 foreach (char c in _phoneNumber)
                 {
                     phoneNumberInput.SendKeys(c.ToString());
-                    Thread.Sleep(100);
+                    Thread.Sleep(200);
                 }
 
-
                 Thread.Sleep(1000);
+
+                // Получаю кнопку отправки номера авторизации 
                 var submitButton = driver.FindElement(By.CssSelector("button[data-e2e-id='topline-login-form__submit-button']"));
+
+                // Перемещаю курсор к кнопке и кликаю
+                action.MoveToElement(authButton).Perform();
                 submitButton.Click();
                 //phoneNumberInput.Submit();
 
-                //// Принимаю пользовательское соглашение
-                //var acceptButton1 = wait.Until(ExpectedConditions.ElementExists(By.XPath("//button[@data-e2e-id='terms-widget-next-button']")));
-                //Thread.Sleep(1000);
-
-                //acceptButton1.Click();
-
-
-                //var acceptButton2 = wait.Until(ExpectedConditions.ElementExists(By.XPath("//button[@data-e2e-id='terms-widget-next-button']")));
-                //Thread.Sleep(1000);
-                //acceptButton2.Click();
+                
                 return true;
             }
             catch (Exception ex)
@@ -79,14 +75,6 @@ namespace DomclickComplaint
                 Console.WriteLine(ex.StackTrace);
                 return false;
             }
-        }
-
-
-        private async Task<AuthData> ReadAuthDataAsync()
-        {
-            using var streamReader = new StreamReader("authData.json");
-            var json = await streamReader.ReadToEndAsync();
-            return JsonConvert.DeserializeObject<AuthData>(json);
-        }
+        }    
     }
 }
