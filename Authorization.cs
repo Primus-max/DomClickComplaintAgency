@@ -75,7 +75,7 @@ namespace DomclickComplaint
                 var passwordInput = wait.Until(ExpectedConditions.ElementExists(By.Id("topline-login-form__password-input")));
                 passwordInput.SendKeys(_password);
 
-                Thread.Sleep(1000);
+                Thread.Sleep(2000);
 
                 // Получаю кнопку для продтверждения пароля
                 var loginButton = wait.Until(ExpectedConditions.ElementExists(By.CssSelector("button[data-e2e-id='topline-login-form__submit-button']")));
