@@ -17,6 +17,11 @@ namespace DomclickComplaint
             try
             {
                 var options = new ChromeOptions();
+                //options.AddUserProfilePreference("credentials_enable_service", false);
+                //options.AddUserProfilePreference("profile.password_manager_enabled", false);
+                //options.AddUserProfilePreference("profile.default_content_setting_values.notifications", 2);
+
+                options.AddArguments("--no-sandbox", "--disable-dev-shm-usage", "--disable-notifications", "--disable-popup-blocking");
 
                 driver = UndetectedChromeDriver.Create(options = options,
                                     driverExecutablePath:
