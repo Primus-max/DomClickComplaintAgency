@@ -49,7 +49,7 @@ namespace DomclickComplaint
 
                 List<IWebElement> sellersCards = await GetElementsAsync(_driver);
 
-                //Send(sellersCards);
+                Send(sellersCards);
 
 
                 //// Открыть новую вкладку
@@ -71,23 +71,83 @@ namespace DomclickComplaint
 
             foreach (var offer in _sellersCards)
             {
-                var setFavoriteOffer = offer.FindElement(By.CssSelector("button[data-e2e-id='product-snippet-favorite']"));
-                setFavoriteOffer.Click();
+                // Получаем кнопку "Добавить в избранное" и жмем
+                try
+                {
+                    var setFavoriteOffer = offer.FindElement(By.CssSelector("button[data-e2e-id='product-snippet-favorite']"));
+                    var clickableShowMoreButton = wait.Until(ExpectedConditions.ElementToBeClickable(setFavoriteOffer));
+                    clickableShowMoreButton.Click();
+                }
+                catch (Exception) { }
 
                 Thread.Sleep(1000);
 
+                // Перехожу в карточку продавца
                 offer.Click();
                 Thread.Sleep(3000);
-
-                // Получить список открытых вкладок
+                // Получаю список открытых вкладок
                 List<string> tabs = new List<string>(_driver.WindowHandles);
 
-                // Переключиться на новую вкладку
+                // Переключаюсь на новую вкладку
                 _driver.SwitchTo().Window(tabs[1]);
 
 
-                var element = _driver.FindElement(By.CssSelector("button[data-e2e-id='agent-show-number']"));
-                element.Click();
+                Thread.Sleep(5000);
+                // Нажимаю на кнопку "Показать телефон"
+                var showPhoneButton = _driver.FindElement(By.CssSelector("button[data-e2e-id='agent-show-number']"));
+                var clickableshowPhoneButton = wait.Until(ExpectedConditions.ElementToBeClickable(showPhoneButton));
+                clickableshowPhoneButton.Click();
+
+
+                // Прокручиваем до кнопки "Пожаловаться"
+                try
+                {
+                    var complaintButton = _driver.FindElement(By.CssSelector("button[data-e2e-id='complaint_button']"));
+                    var step = 200;
+                    var currentScroll = 0;
+
+                    while (!IsElementVisible(complaintButton))
+                    {
+                        currentScroll += step;
+                        var js = $"window.scrollTo(0, {currentScroll});";
+                        ((IJavaScriptExecutor)_driver).ExecuteScript(js);
+                        Thread.Sleep(500);
+                    }
+
+                    complaintButton.Click();
+
+                    bool IsElementVisible(IWebElement element)
+                    {
+                        return element.Displayed && element.Enabled;
+                    }
+
+                }
+                catch (Exception) { }
+
+                // Выбираем рандомуню кнопку для жалобы
+                try
+                {
+                    var complaintElement = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("div[data-e2e-id='complaint-single-choice']")));
+
+                    var complaintOptions = wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.CssSelector("div[data-e2e-id='complaint-single-choice'] *")));
+
+                    var randomIndex = new Random().Next(0, complaintOptions.Count);
+
+                    var clickableComplaintOption = wait.Until(ExpectedConditions.ElementToBeClickable(complaintOptions[randomIndex]));
+                    clickableComplaintOption.Click();
+                }
+                catch (Exception) { }
+
+
+                // Получаю кнопку "Пожаловаться"
+                try
+                {
+                    var sendButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("button[data-e2e-id='complaint_send_button']")));
+                    // Кликаем на кнопку
+                    sendButton.Click();
+                }
+                catch (Exception) { }
+
             }
         }
 
@@ -98,6 +158,7 @@ namespace DomclickComplaint
             var offersListWhithoutHeart = new List<IWebElement>();
             var lastScrollPosition = 0;
 
+            // В цикле прокручиваю странице и собираю элементы, выдаю случайные 10 элементов.
             do
             {
                 try
@@ -129,6 +190,7 @@ namespace DomclickComplaint
 
                         try
                         {
+                            // Если есть кнопка "Показать еще" докручиваем до нее и кликаем.
                             var showMoreButton = driver.FindElement(By.CssSelector("button[data-e2e-id='next-offers-button']"));
                             while (!showMoreButton.Displayed || !showMoreButton.Enabled)
                             {
@@ -144,6 +206,7 @@ namespace DomclickComplaint
 
                         try
                         {
+                            // Елсли есть индиктор динамической подгрузки страницы, пролистывам к нему и ждем
                             var loadingElement = driver.FindElement(By.CssSelector("div[data-e2e-id='next-offers-button-lazy']"));
                             while (!loadingElement.Displayed)
                             {
@@ -153,7 +216,7 @@ namespace DomclickComplaint
                             }
 
                             var clickableLoadingElement = wait.Until(ExpectedConditions.ElementToBeClickable(loadingElement));
-                            clickableLoadingElement.Click();
+                            //clickableLoadingElement.Click();
                         }
                         catch (Exception) { }
 
