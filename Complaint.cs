@@ -49,7 +49,7 @@ namespace DomclickComplaint
 
                 List<IWebElement> sellersCards = await GetElementsAsync(_driver);
 
-                Send(sellersCards);
+                //Send(sellersCards);
 
 
                 //// Открыть новую вкладку
@@ -116,8 +116,8 @@ namespace DomclickComplaint
                     if (offersListWhithoutHeart.Count < 30)
                     {
                         var lastOfferElement = offersList.Last();
-                        var lastOfferPositionY = lastOfferElement.Location.Y + 150;
-                        var scrollStep = 200;
+                        var lastOfferPositionY = lastOfferElement.Location.Y + 230;
+                        var scrollStep = 230;
                         lastScrollPosition = lastScrollPosition == 0 ? scrollStep : lastScrollPosition;
                         while (lastScrollPosition < lastOfferPositionY)
                         {
@@ -130,21 +130,33 @@ namespace DomclickComplaint
                         try
                         {
                             var showMoreButton = driver.FindElement(By.CssSelector("button[data-e2e-id='next-offers-button']"));
-                            Thread.Sleep(1000);
-                            showMoreButton.Click();
+                            while (!showMoreButton.Displayed || !showMoreButton.Enabled)
+                            {
+                                var js = "window.scrollTo(0, document.body.scrollHeight);";
+                                ((IJavaScriptExecutor)driver).ExecuteScript(js);
+                                Thread.Sleep(1000);
+                            }
+
+                            var clickableShowMoreButton = wait.Until(ExpectedConditions.ElementToBeClickable(showMoreButton));
+                            clickableShowMoreButton.Click();
                         }
                         catch (Exception) { }
 
                         try
                         {
-                            var loadingElement = driver.FindElements(By.CssSelector("div[data-e2e-id='next-offers-button-lazy']"));
-                            while (loadingElement.Count != 0)
+                            var loadingElement = driver.FindElement(By.CssSelector("div[data-e2e-id='next-offers-button-lazy']"));
+                            while (!loadingElement.Displayed)
                             {
-                                Thread.Sleep(100);
-                                loadingElement = driver.FindElements(By.CssSelector("div[data-e2e-id='next-offers-button-lazy']"));
+                                var js = "window.scrollTo(0, document.body.scrollHeight);";
+                                ((IJavaScriptExecutor)driver).ExecuteScript(js);
+                                Thread.Sleep(1000);
                             }
+
+                            var clickableLoadingElement = wait.Until(ExpectedConditions.ElementToBeClickable(loadingElement));
+                            clickableLoadingElement.Click();
                         }
                         catch (Exception) { }
+
                     }
                 }
                 catch (Exception) { }

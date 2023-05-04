@@ -14,4 +14,7 @@
     <SourceRoot Include="Z:\Programs\VS\Shared\NuGetPackages\" />
     <SourceRoot Include="Z:\Microsoft\Xamarin\NuGet\" />
   </ItemGroup>
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <PkgjQuery Condition=" '$(PkgjQuery)' == '' ">C:\Users\SKTV-1\.nuget\packages\jquery\3.6.4</PkgjQuery>
+  </PropertyGroup>
 </Project>

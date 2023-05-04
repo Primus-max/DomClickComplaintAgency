@@ -14,6 +14,9 @@
           "lib/netstandard2.0/SeleniumExtras.WaitHelpers.dll": {}
         }
       },
+      "jQuery/3.6.4": {
+        "type": "package"
+      },
       "Microsoft.NETCore.Platforms/1.1.0": {
         "type": "package",
         "compile": {
@@ -333,6 +336,29 @@
         "lib/net40/SeleniumExtras.WaitHelpers.dll",
         "lib/net45/SeleniumExtras.WaitHelpers.dll",
         "lib/netstandard2.0/SeleniumExtras.WaitHelpers.dll"
+      ]
+    },
+    "jQuery/3.6.4": {
+      "sha512": "6p9twP9WU+SPZPH5ArBBrXeesAEAlwuyw2tFbqcqQj5CARfh6R+v1216WkBGaeJJu7gZw2lLG+7Nh/XOylcsqg==",
+      "type": "package",
+      "path": "jquery/3.6.4",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Content/Scripts/jquery-3.6.4-vsdoc.js",
+        "Content/Scripts/jquery-3.6.4.js",
+        "Content/Scripts/jquery-3.6.4.min.js",
+        "Content/Scripts/jquery-3.6.4.min.map",
+        "Content/Scripts/jquery-3.6.4.slim.js",
+        "Content/Scripts/jquery-3.6.4.slim.min.js",
+        "Content/Scripts/jquery-3.6.4.slim.min.map",
+        "Tools/common.ps1",
+        "Tools/install.ps1",
+        "Tools/jquery-3.6.4.intellisense.js",
+        "Tools/uninstall.ps1",
+        "jquery.3.6.4.nupkg.sha512",
+        "jquery.nuspec"
       ]
     },
     "Microsoft.NETCore.Platforms/1.1.0": {
@@ -1637,7 +1663,8 @@
   "projectFileDependencyGroups": {
     "net6.0": [
       "DotNetSeleniumExtras.WaitHelpers >= 3.11.0",
-      "Selenium.UndetectedChromeDriver >= 1.1.1"
+      "Selenium.UndetectedChromeDriver >= 1.1.1",
+      "jQuery >= 3.6.4"
     ]
   },
   "packageFolders": {
@@ -1694,6 +1721,10 @@
           "Selenium.UndetectedChromeDriver": {
             "target": "Package",
             "version": "[1.1.1, )"
+          },
+          "jQuery": {
+            "target": "Package",
+            "version": "[3.6.4, )"
           }
         },
         "imports": [

@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "OhRKpu32dj9txnHoMX5BMa5B4AZ+Zsgc7w34O4B0ckwEk4TS97DXXnWS7++ZgdH6f3fTkAlrU2InvATMIL8nfQ==",
+  "dgSpecHash": "QIvBiQdBT13SO69I5S4Z8+M5TsKITn/D1JMNpYvvukbjXkssZDv0lCyo8gS930a6Y/DWyG0mMZV8yi4MMYHpDA==",
   "success": true,
   "projectFilePath": "Z:\\Programming\\ProjectC#\\DomclickComplaint\\DomclickComplaint.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\SKTV-1\\.nuget\\packages\\dotnetseleniumextras.waithelpers\\3.11.0\\dotnetseleniumextras.waithelpers.3.11.0.nupkg.sha512",
+    "C:\\Users\\SKTV-1\\.nuget\\packages\\jquery\\3.6.4\\jquery.3.6.4.nupkg.sha512",
     "C:\\Users\\SKTV-1\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Users\\SKTV-1\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
     "C:\\Users\\SKTV-1\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
