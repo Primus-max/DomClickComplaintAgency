@@ -88,25 +88,21 @@ namespace DomclickComplaint
 
                 var element = _driver.FindElement(By.CssSelector("button[data-e2e-id='agent-show-number']"));
                 element.Click();
-
-
             }
         }
 
         public async Task<List<IWebElement>> GetElementsAsync(IWebDriver driver)
         {
-            List<IWebElement> elements = new List<IWebElement>();
+            var elements = new List<IWebElement>();
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-            List<IWebElement> offersList = null;
-            List<IWebElement> offersListWhithoutHeart = new List<IWebElement>();
+            var offersListWhithoutHeart = new List<IWebElement>();
+            var lastScrollPosition = 0;
 
             do
             {
-                ScrollToBottom(_driver);
-
                 try
                 {
-                    offersList = _driver.FindElements(By.CssSelector(".NrWKB.QSUyP")).ToList();
+                    var offersList = driver.FindElements(By.CssSelector(".NrWKB.QSUyP")).ToList();
 
                     foreach (var offer in offersList)
                     {
@@ -116,104 +112,49 @@ namespace DomclickComplaint
                             offersListWhithoutHeart.AddRange(childElements);
                         }
                     }
+
+                    if (offersListWhithoutHeart.Count < 30)
+                    {
+                        var lastOfferElement = offersList.Last();
+                        var lastOfferPositionY = lastOfferElement.Location.Y + 150;
+                        var scrollStep = 200;
+                        lastScrollPosition = lastScrollPosition == 0 ? scrollStep : lastScrollPosition;
+                        while (lastScrollPosition < lastOfferPositionY)
+                        {
+                            lastScrollPosition += scrollStep;
+                            var js = $"window.scrollTo(0, {lastScrollPosition});";
+                            ((IJavaScriptExecutor)driver).ExecuteScript(js);
+                            Thread.Sleep(400);
+                        }
+
+                        try
+                        {
+                            var showMoreButton = driver.FindElement(By.CssSelector("button[data-e2e-id='next-offers-button']"));
+                            Thread.Sleep(1000);
+                            showMoreButton.Click();
+                        }
+                        catch (Exception) { }
+
+                        try
+                        {
+                            var loadingElement = driver.FindElements(By.CssSelector("div[data-e2e-id='next-offers-button-lazy']"));
+                            while (loadingElement.Count != 0)
+                            {
+                                Thread.Sleep(100);
+                                loadingElement = driver.FindElements(By.CssSelector("div[data-e2e-id='next-offers-button-lazy']"));
+                            }
+                        }
+                        catch (Exception) { }
+                    }
                 }
                 catch (Exception) { }
+            } while (offersListWhithoutHeart.Count < 30);
 
+            // Выбираем 10 случайных элементов и добавляем их в новый список
+            var randomElementsList = driver.FindElements(By.CssSelector(".NrWKB.QSUyP")).OrderBy(x => Guid.NewGuid()).Take(10).ToList();
 
-                if (offersListWhithoutHeart.Count < 10)
-                {
-                    try
-                    {
-                        var showMoreButton = _driver.FindElement(By.CssSelector("button[data-e2e-id='next-offers-button']"));
-                        showMoreButton.Click();
-                    }
-                    catch (Exception) { }
-
-                    try
-                    {
-                        var loadingElement = _driver.FindElements(By.CssSelector("div[data-e2e-id='next-offers-button-lazy']"));
-                        while (loadingElement.Count != 0)
-                        {
-                            Thread.Sleep(100);
-                            loadingElement = _driver.FindElements(By.CssSelector("div[data-e2e-id='next-offers-button-lazy']"));
-                        }
-                    }
-                    catch (Exception) { }
-
-                }
-            } while (offersListWhithoutHeart.Count < 10);
-
-
-
-            //while (true)
-            //{
-            //    //try
-            //    //{
-            //    //    //var elementList = driver.FindElements(By.CssSelector("div[data-e2e-id='offers-list__item'] div[data-e2e-id='heart-outlined-icon']"));
-
-            //    //    if (elementList.Count < 30)
-            //    //    {
-            //    //        var button = driver.FindElement(By.CssSelector("div[data-e2e-id='next-offers-button-lazy']"));
-            //    //        if (button != null)
-            //    //        {
-            //    //            await Task.Run(() => ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'end' });", button));
-            //    //            await Task.Delay(1000);
-            //    //        }
-            //    //        else
-            //    //        {
-            //    //            button = driver.FindElement(By.CssSelector("button[data-e2e-id='next-offers-button']"));
-            //    //            await Task.Run(() => button.Click());
-            //    //            wait.Until(ExpectedConditions.StalenessOf(button));
-            //    //        }
-            //    //    }
-            //    //    else
-            //    //    {
-            //    //        elements.AddRange(elementList);
-            //    //    }
-            //    //}
-            //    //catch (Exception)
-            //    //{
-
-            //    //    throw;
-            //    //}
-
-
-
-            //}
-
-            // выбираем 10 случайных элементов и добавляем их в новый список
-            var randomElementsList = offersList.OrderBy(x => Guid.NewGuid()).Take(10).ToList();
-
-            // возвращаем список со случайными элементами
+            // Возвращаем список со случайными элементами
             return randomElementsList;
-        }
-
-        public static void ScrollToBottom(IWebDriver driver)
-        {
-            try
-            {
-                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-                long windowHeight = (long)js.ExecuteScript("return window.innerHeight");
-                long totalHeight = (long)js.ExecuteScript("return document.body.scrollHeight");
-                long scrollHeight = 0;
-                long scrollStep = windowHeight;
-
-                while (scrollHeight < totalHeight)
-                {
-                    js.ExecuteScript($"window.scrollBy(0, {scrollStep});");
-                    Thread.Sleep(700);
-                    scrollHeight += scrollStep;
-
-                    if (scrollHeight + windowHeight > totalHeight)
-                    {
-                        scrollStep = totalHeight - scrollHeight;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"An error occurred while scrolling to bottom: {ex.Message}");
-            }
         }
     }
 }
