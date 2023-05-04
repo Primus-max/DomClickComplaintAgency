@@ -74,55 +74,72 @@ namespace DomclickComplaint
                 // Получаем кнопку "Добавить в избранное" и жмем
                 try
                 {
+                    // Прокрутить страницу к элементу
+                    ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", offer);
+
                     var setFavoriteOffer = offer.FindElement(By.CssSelector("button[data-e2e-id='product-snippet-favorite']"));
                     var clickableShowMoreButton = wait.Until(ExpectedConditions.ElementToBeClickable(setFavoriteOffer));
                     clickableShowMoreButton.Click();
                 }
                 catch (Exception) { }
 
-                Thread.Sleep(1000);
+                Thread.Sleep(1500);
 
-                // Перехожу в карточку продавца
-                offer.Click();
-                Thread.Sleep(3000);
-                // Получаю список открытых вкладок
-                List<string> tabs = new List<string>(_driver.WindowHandles);
+                //// Перехожу в карточку продавца
+                //offer.Click();
+                //Thread.Sleep(3000);
+                //// Получаю список открытых вкладок
+                //List<string> tabs = new List<string>(_driver.WindowHandles);
 
-                // Переключаюсь на новую вкладку
-                _driver.SwitchTo().Window(tabs[1]);
+                //// Переключаюсь на новую вкладку
+                //_driver.SwitchTo().Window(tabs[1]);
 
 
-                Thread.Sleep(5000);
+
                 // Нажимаю на кнопку "Показать телефон"
-                var showPhoneButton = _driver.FindElement(By.CssSelector("button[data-e2e-id='agent-show-number']"));
+                var showPhoneButton = offer.FindElement(By.CssSelector("button[data-e2e-id='show-phone-button']"));
                 var clickableshowPhoneButton = wait.Until(ExpectedConditions.ElementToBeClickable(showPhoneButton));
                 clickableshowPhoneButton.Click();
 
-
-                // Прокручиваем до кнопки "Пожаловаться"
+                Thread.Sleep(3000);
+                // Нажимаю кнопку "Пожаловаться"
                 try
                 {
-                    var complaintButton = _driver.FindElement(By.CssSelector("button[data-e2e-id='complaint_button']"));
-                    var step = 200;
-                    var currentScroll = 0;
+                    var complaintButton = offer.FindElement(By.CssSelector("button[data-e2e-id='snippet-complaint-button']"));
 
-                    while (!IsElementVisible(complaintButton))
-                    {
-                        currentScroll += step;
-                        var js = $"window.scrollTo(0, {currentScroll});";
-                        ((IJavaScriptExecutor)_driver).ExecuteScript(js);
-                        Thread.Sleep(500);
-                    }
+                    // смещаем курсор на offer, чтобы появилась кнопка жалобы
+                    var actions = new Actions(_driver);
+                    actions.MoveToElement(offer).Perform();
+
+                    // ждем, пока кнопка жалобы не появится                   
+                    wait.Until(ExpectedConditions.ElementToBeClickable(complaintButton));
 
                     complaintButton.Click();
-
-                    bool IsElementVisible(IWebElement element)
-                    {
-                        return element.Displayed && element.Enabled;
-                    }
-
+                    
                 }
                 catch (Exception) { }
+
+
+                //// Прокручиваем до кнопки "Пожаловаться"
+                //try
+                //{
+                //    var complaintButton = _driver.FindElement(By.CssSelector("button[data-e2e-id='complaint_button']"));
+                //    var step = 250;
+                //    var currentScroll = 0;
+                //    var targetY = complaintButton.Location.Y + 200;
+
+                //    for (int i = 0; i <= targetY; i += step)
+                //    {
+                //        var js = $"window.scrollTo(0, {i});";
+                //        ((IJavaScriptExecutor)_driver).ExecuteScript(js);
+                //        Thread.Sleep(500);
+                //    }
+
+                //    complaintButton.Click();
+
+
+                //}
+                //catch (Exception) { }
 
                 // Выбираем рандомуню кнопку для жалобы
                 try
