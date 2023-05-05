@@ -97,9 +97,14 @@ namespace DomclickComplaint
 
 
                 // Нажимаю на кнопку "Показать телефон"
-                var showPhoneButton = offer.FindElement(By.CssSelector("button[data-e2e-id='show-phone-button']"));
-                var clickableshowPhoneButton = wait.Until(ExpectedConditions.ElementToBeClickable(showPhoneButton));
-                clickableshowPhoneButton.Click();
+                try
+                {
+                    var showPhoneButton = offer.FindElement(By.CssSelector("button[data-e2e-id='show-phone-button']"));
+                    var clickableshowPhoneButton = wait.Until(ExpectedConditions.ElementToBeClickable(showPhoneButton));
+                    clickableshowPhoneButton.Click();
+                }
+                catch (Exception) { }
+
 
                 Thread.Sleep(3000);
                 // Нажимаю кнопку "Пожаловаться"
@@ -111,11 +116,11 @@ namespace DomclickComplaint
                     var actions = new Actions(_driver);
                     actions.MoveToElement(offer).Perform();
 
+                    Thread.Sleep(1000);
                     // ждем, пока кнопка жалобы не появится                   
-                    wait.Until(ExpectedConditions.ElementToBeClickable(complaintButton));
+                    //wait.Until(ExpectedConditions.ElementToBeClickable(complaintButton));
 
                     complaintButton.Click();
-                    
                 }
                 catch (Exception) { }
 
@@ -144,9 +149,10 @@ namespace DomclickComplaint
                 // Выбираем рандомуню кнопку для жалобы
                 try
                 {
-                    var complaintElement = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("div[data-e2e-id='complaint-single-choice']")));
+                    Thread.Sleep(1500);
+                    var complaintElement = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".multipleButtonSelect-root-6-2-3.multipleButtonSelect-root--medium-6-2-3")));
 
-                    var complaintOptions = wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.CssSelector("div[data-e2e-id='complaint-single-choice'] *")));
+                    var complaintOptions = complaintElement.FindElements(By.TagName("label"));
 
                     var randomIndex = new Random().Next(0, complaintOptions.Count);
 
@@ -159,12 +165,14 @@ namespace DomclickComplaint
                 // Получаю кнопку "Пожаловаться"
                 try
                 {
-                    var sendButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("button[data-e2e-id='complaint_send_button']")));
-                    // Кликаем на кнопку
-                    sendButton.Click();
+                    var complaintButton = _driver.FindElement(By.CssSelector(".modal-footer-button-12-1-1"));
+                    var actions = new Actions(_driver);
+                    actions.MoveToElement(complaintButton).Perform();
+                    Thread.Sleep(1000);
+                    complaintButton.Click();
+                    Thread.Sleep(1000);
                 }
                 catch (Exception) { }
-
             }
         }
 
