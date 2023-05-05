@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace DomclickComplaint
@@ -50,8 +51,7 @@ namespace DomclickComplaint
             bool isAuthSeccess = await authorization.AuthenticateAsync(_driver);
 
             if (isAuthSeccess)
-            {
-                // Перехожу на страницу >> Томск(Регионы) >> Купить >> Квартиры
+            {                
                 wait.Until(_driver => ((IJavaScriptExecutor)_driver).ExecuteScript("return document.readyState").Equals("complete"));
                 _driver.Navigate().GoToUrl(_curRubric);
 
@@ -66,12 +66,14 @@ namespace DomclickComplaint
             List<IWebElement> _sellersCards = sellersCards;
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(30));
 
+            ComplaintedSellers complainted = new();
+
             foreach (var offer in _sellersCards)
             {
                 // Получаем кнопку "Добавить в избранное" и жмем
                 try
                 {
-                    // Прокрутить страницу к элементу
+                    // Прокручиваю страницу к элементу
                     ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", offer);
 
                     var setFavoriteOffer = offer.FindElement(By.CssSelector("button[data-e2e-id='product-snippet-favorite']"));
@@ -86,6 +88,27 @@ namespace DomclickComplaint
                 try
                 {
                     var showPhoneButton = offer.FindElement(By.CssSelector("button[data-e2e-id='show-phone-button']"));
+                    var sellerName = offer.FindElement(By.CssSelector(".NNu3K6"));
+
+                    // Добавляю данные для записи в логи и добавления в файл Json
+                    complainted.PhoneSeller = showPhoneButton.Text;
+                    complainted.NameSeller = sellerName.Text;
+
+                    string fileName = "complaintedSellers.json";
+                    string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+
+                    if (!File.Exists(filePath))
+                    {
+                        File.Create(filePath).Close();
+                    }
+
+                    string jsonString = JsonSerializer.Serialize(complainted);
+
+                    File.AppendAllText(filePath, jsonString + Environment.NewLine);
+
+
+                    Thread.Sleep(1000);
+
                     var clickableshowPhoneButton = wait.Until(ExpectedConditions.ElementToBeClickable(showPhoneButton));
                     clickableshowPhoneButton.Click();
                 }
