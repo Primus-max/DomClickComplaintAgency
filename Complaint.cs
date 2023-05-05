@@ -14,9 +14,17 @@ namespace DomclickComplaint
     public class Complaint
     {
         Uri baseUri = new("https://domclick.ru");
-        Uri regionUri = new("https://tomsk.domclick.ru");
-        Uri regionBuyFlat = new("https://tomsk.domclick.ru/search?deal_type=sale&category=living&offer_type=flat&from=topline2020&address=d5883f07-6a8e-4ba2-b0de-c266d11dd0e4&aids=13667&offset=0");
+
         private UndetectedChromeDriver? _driver;
+        private Uri _curRubric;
+        private string? _logFileName;
+
+
+        public Complaint(Uri UrlRubric, string logFileName)
+        {
+            _curRubric = UrlRubric;
+            _logFileName = logFileName;
+        }
 
         public async void SendComplaint()
         {
@@ -45,22 +53,11 @@ namespace DomclickComplaint
             {
                 // Перехожу на страницу >> Томск(Регионы) >> Купить >> Квартиры
                 wait.Until(_driver => ((IJavaScriptExecutor)_driver).ExecuteScript("return document.readyState").Equals("complete"));
-                _driver.Navigate().GoToUrl(regionBuyFlat);
+                _driver.Navigate().GoToUrl(_curRubric);
 
                 List<IWebElement> sellersCards = await GetElementsAsync(_driver);
 
                 Send(sellersCards);
-
-
-                //// Открыть новую вкладку
-                //_driver.ExecuteScript("window.open();");
-
-                //// Получить список открытых вкладок
-                //List<string> tabs = new List<string>(_driver.WindowHandles);
-
-                //// Переключиться на новую вкладку
-                //_driver.SwitchTo().Window(tabs[1]);
-
             }
         }
 
@@ -85,17 +82,6 @@ namespace DomclickComplaint
 
                 Thread.Sleep(1500);
 
-                //// Перехожу в карточку продавца
-                //offer.Click();
-                //Thread.Sleep(3000);
-                //// Получаю список открытых вкладок
-                //List<string> tabs = new List<string>(_driver.WindowHandles);
-
-                //// Переключаюсь на новую вкладку
-                //_driver.SwitchTo().Window(tabs[1]);
-
-
-
                 // Нажимаю на кнопку "Показать телефон"
                 try
                 {
@@ -117,34 +103,10 @@ namespace DomclickComplaint
                     actions.MoveToElement(offer).Perform();
 
                     Thread.Sleep(1000);
-                    // ждем, пока кнопка жалобы не появится                   
-                    //wait.Until(ExpectedConditions.ElementToBeClickable(complaintButton));
 
                     complaintButton.Click();
                 }
                 catch (Exception) { }
-
-
-                //// Прокручиваем до кнопки "Пожаловаться"
-                //try
-                //{
-                //    var complaintButton = _driver.FindElement(By.CssSelector("button[data-e2e-id='complaint_button']"));
-                //    var step = 250;
-                //    var currentScroll = 0;
-                //    var targetY = complaintButton.Location.Y + 200;
-
-                //    for (int i = 0; i <= targetY; i += step)
-                //    {
-                //        var js = $"window.scrollTo(0, {i});";
-                //        ((IJavaScriptExecutor)_driver).ExecuteScript(js);
-                //        Thread.Sleep(500);
-                //    }
-
-                //    complaintButton.Click();
-
-
-                //}
-                //catch (Exception) { }
 
                 // Выбираем рандомуню кнопку для жалобы
                 try
