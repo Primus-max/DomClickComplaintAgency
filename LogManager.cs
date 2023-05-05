@@ -34,12 +34,13 @@ public static class LogManager
 
     public static void LogMessage(string message, string fileName)
     {
-        string basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "VkLogs");
+        string basePath = AppDomain.CurrentDomain.BaseDirectory;
         string programName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName);
         string folderPath = Path.Combine(basePath, programName, DateTime.Now.ToString("yyyy-MM-dd"));
         string filePath = Path.Combine(folderPath, fileName);
 
         Directory.CreateDirectory(folderPath);
+
 
         try
         {

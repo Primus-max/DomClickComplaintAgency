@@ -64,6 +64,7 @@ namespace DomclickComplaint
         public void Send(List<IWebElement> sellersCards)
         {
             List<IWebElement> _sellersCards = sellersCards;
+            List<ComplaintedSellers> complaintedSellersList = new List<ComplaintedSellers>();
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(30));
 
             ComplaintedSellers complainted = new();
@@ -144,18 +145,25 @@ namespace DomclickComplaint
                     complaintButton.Click();
                     Thread.Sleep(1000);
 
+                    // При успешной подаче жалобы записываю в лог
+                    string message = $"Жалоба на: {complainted.NameSeller} с номером телефона: {complainted.PhoneSeller}";
+                    LogManager.LogMessage(message, _logFileName);
+
                     // При успешной подаче жалобы записываю в json (база данных)
                     string fileName = "complaintedSellers.json";
                     string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
 
-                    if (!File.Exists(filePath))
+
+                    if (File.Exists(filePath))
                     {
-                        File.Create(filePath).Close();
+                        string json = File.ReadAllText(filePath, Encoding.UTF8);
+                        complaintedSellersList = JsonSerializer.Deserialize<List<ComplaintedSellers>>(json);
                     }
 
-                    string jsonString = JsonSerializer.Serialize(complainted);
+                    complaintedSellersList.Add(complainted);
 
-                    File.AppendAllText(filePath, jsonString + Environment.NewLine);
+                    string jsonString = JsonSerializer.Serialize(complaintedSellersList);
+                    File.WriteAllText(filePath, jsonString, Encoding.UTF8);
                 }
                 catch (Exception) { }
             }

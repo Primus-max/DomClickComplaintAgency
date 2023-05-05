@@ -8,7 +8,7 @@ namespace DomclickComplaint
 
         static async Task Main(string[] args)
         {
-            string? logFileName = DateTime.Now.ToString("HH-mm-ss");
+            string? logFileName = DateTime.Now.ToString("HH-mm-ss") + ".txt";
 
             Uri uri = ChooseCategory();
 
