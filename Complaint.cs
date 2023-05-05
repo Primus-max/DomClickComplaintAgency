@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -135,9 +136,10 @@ namespace DomclickComplaint
                 catch (Exception) { }
 
 
-                // Получаю кнопку "Пожаловаться"
+
                 try
                 {
+                    // Получаю кнопку "Пожаловаться"
                     var complaintButton = _driver.FindElement(By.CssSelector(".modal-footer-button-12-1-1"));
                     var actions = new Actions(_driver);
                     actions.MoveToElement(complaintButton).Perform();
@@ -145,25 +147,30 @@ namespace DomclickComplaint
                     complaintButton.Click();
                     Thread.Sleep(1000);
 
-                    // При успешной подаче жалобы записываю в лог
+                    // Записываю в лог
                     string message = $"Жалоба на: {complainted.NameSeller} с номером телефона: {complainted.PhoneSeller}";
                     LogManager.LogMessage(message, _logFileName);
 
-                    // При успешной подаче жалобы записываю в json (база данных)
+                    // Записываю в json (база данных)
                     string fileName = "complaintedSellers.json";
                     string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
 
-
                     if (File.Exists(filePath))
                     {
-                        string json = File.ReadAllText(filePath, Encoding.UTF8);
+                        string json = File.ReadAllText(filePath);
                         complaintedSellersList = JsonSerializer.Deserialize<List<ComplaintedSellers>>(json);
                     }
 
                     complaintedSellersList.Add(complainted);
 
-                    string jsonString = JsonSerializer.Serialize(complaintedSellersList);
-                    File.WriteAllText(filePath, jsonString, Encoding.UTF8);
+                    JsonSerializerOptions options = new JsonSerializerOptions
+                    {
+                        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                        WriteIndented = true
+                    };
+
+                    string jsonString = JsonSerializer.Serialize(complaintedSellersList, options);
+                    File.WriteAllText(filePath, jsonString);
                 }
                 catch (Exception) { }
             }
