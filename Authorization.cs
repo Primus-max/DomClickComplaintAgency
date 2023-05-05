@@ -22,6 +22,7 @@ namespace DomclickComplaint
         private string? _password;
 
         private static readonly object _lock = new object();
+        private Random _randomeTimeWating = new Random();
         public async Task<bool> AuthenticateAsync(UndetectedChromeDriver driver)
         {
             try
@@ -51,14 +52,16 @@ namespace DomclickComplaint
                 // Получаю input для ввода телефона для авторизации
                 var phoneNumberInput = wait.Until(ExpectedConditions.ElementExists(By.Id("topline-login-form__phone-input")));
                 // phoneNumberInput.SendKeys(_phoneNumber);
+
                 // По цифре ввожу номер телефона в поле
+                Thread.Sleep(_randomeTimeWating.Next(1000, 2500));
                 foreach (char c in _phoneNumber)
                 {
                     phoneNumberInput.SendKeys(c.ToString());
-                    Thread.Sleep(200);
+                    Thread.Sleep(_randomeTimeWating.Next(100, 450));
                 }
 
-                Thread.Sleep(1000);
+                Thread.Sleep(_randomeTimeWating.Next(1000, 2500));
 
                 // Получаю кнопку отправки номера авторизации 
 
@@ -66,21 +69,27 @@ namespace DomclickComplaint
 
                 // Перемещаю курсор к кнопке и кликаю
                 action.MoveToElement(submitButton).Perform();
+                Thread.Sleep(_randomeTimeWating.Next(700, 2000));
                 submitButton.Click();
                 //phoneNumberInput.Submit();
 
-                Thread.Sleep(1000);
+                Thread.Sleep(_randomeTimeWating.Next(1000, 2500));
 
                 // Получаю input для вставки пароля и вставляю
                 var passwordInput = wait.Until(ExpectedConditions.ElementExists(By.Id("topline-login-form__password-input")));
-                passwordInput.SendKeys(_password);
+                //passwordInput.SendKeys(_password);
+                foreach (char c in _password)
+                {
+                    passwordInput.SendKeys(c.ToString());
+                    Thread.Sleep(_randomeTimeWating.Next(100, 450));
+                }
 
-                Thread.Sleep(2000);
+                Thread.Sleep(_randomeTimeWating.Next(1000, 2500)); ;
 
                 // Получаю кнопку для продтверждения пароля
                 var loginButton = wait.Until(ExpectedConditions.ElementExists(By.CssSelector("button[data-e2e-id='topline-login-form__submit-button']")));
 
-                Thread.Sleep(1000);
+                Thread.Sleep(_randomeTimeWating.Next(700, 1800));
 
                 // Перемещаю курсор к кнопке и кликаю
                 //action.MoveToElement(loginButton).Perform();

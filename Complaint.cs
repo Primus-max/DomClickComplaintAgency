@@ -72,6 +72,50 @@ namespace DomclickComplaint
 
             foreach (var offer in _sellersCards)
             {
+
+                // Нажимаю на кнопку "Показать телефон"
+                try
+                {
+                    var showPhoneButton = offer.FindElement(By.CssSelector("button[data-e2e-id='show-phone-button']"));
+                    var sellerName = offer.FindElement(By.CssSelector(".NNu3K6"));
+
+                    var clickableshowPhoneButton = wait.Until(ExpectedConditions.ElementToBeClickable(showPhoneButton));
+                    clickableshowPhoneButton.Click();
+
+                    Thread.Sleep(3000);
+
+                    // Добавляю данные для записи в файл Json (база данных)
+                    complainted.PhoneSeller = showPhoneButton.Text;
+                    complainted.NameSeller = sellerName.Text;
+
+                    // Проверяю, если такой телефон уже есть в базе, то перехожу к следующему
+                    string fileName = "complaintedSellers.json";
+                    string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+
+                    bool phoneExists = false;
+
+                    if (File.Exists(filePath))
+                    {
+                        string json = File.ReadAllText(filePath);
+
+                        foreach (ComplaintedSellers complaintedSeller in complaintedSellersList)
+                        {
+                            if (complaintedSeller.PhoneSeller == showPhoneButton.Text)
+                            {
+                                complaintedSellersList = new();
+                                phoneExists = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (phoneExists) continue;
+
+                }
+                catch (Exception) { }
+
+                Thread.Sleep(1500);
+
+
                 // Получаем кнопку "Добавить в избранное" и жмем
                 try
                 {
@@ -83,26 +127,6 @@ namespace DomclickComplaint
                     clickableShowMoreButton.Click();
                 }
                 catch (Exception) { }
-
-                Thread.Sleep(1500);
-
-                // Нажимаю на кнопку "Показать телефон"
-                try
-                {
-                    var showPhoneButton = offer.FindElement(By.CssSelector("button[data-e2e-id='show-phone-button']"));
-                    var sellerName = offer.FindElement(By.CssSelector(".NNu3K6"));
-
-                    var clickableshowPhoneButton = wait.Until(ExpectedConditions.ElementToBeClickable(showPhoneButton));
-                    clickableshowPhoneButton.Click();
-
-                    Thread.Sleep(2000);
-
-                    // Добавляю данные для записи в файл Json (база данных)
-                    complainted.PhoneSeller = showPhoneButton.Text;
-                    complainted.NameSeller = sellerName.Text;
-                }
-                catch (Exception) { }
-
 
                 Thread.Sleep(3000);
                 // Нажимаю кнопку "Пожаловаться"
