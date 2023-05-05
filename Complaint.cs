@@ -21,6 +21,7 @@ namespace DomclickComplaint
         private Uri _curRubric;
         private string? _logFileName;
 
+        private Random _randomeTimeWating = new Random();
 
         public Complaint(Uri UrlRubric, string logFileName)
         {
@@ -47,7 +48,9 @@ namespace DomclickComplaint
                 Console.WriteLine($"Не удалось перейти по указанному адресу по причине: {ex.Message}");
             }
 
+
             // Прохожу авторизацию
+            Thread.Sleep(_randomeTimeWating.Next(1000, 2500));
             Authorization authorization = new();
             bool isAuthSeccess = await authorization.AuthenticateAsync(_driver);
 
@@ -55,6 +58,8 @@ namespace DomclickComplaint
             {
                 wait.Until(_driver => ((IJavaScriptExecutor)_driver).ExecuteScript("return document.readyState").Equals("complete"));
                 _driver.Navigate().GoToUrl(_curRubric);
+
+                Thread.Sleep(_randomeTimeWating.Next(1000, 2500));
 
                 List<IWebElement> sellersCards = await GetElementsAsync(_driver);
 
@@ -82,7 +87,7 @@ namespace DomclickComplaint
                     var clickableshowPhoneButton = wait.Until(ExpectedConditions.ElementToBeClickable(showPhoneButton));
                     clickableshowPhoneButton.Click();
 
-                    Thread.Sleep(3000);
+                    Thread.Sleep(_randomeTimeWating.Next(3000, 5000));
 
                     // Добавляю данные для записи в файл Json (база данных)
                     complainted.PhoneSeller = showPhoneButton.Text;
@@ -113,7 +118,7 @@ namespace DomclickComplaint
                 }
                 catch (Exception) { }
 
-                Thread.Sleep(1500);
+                Thread.Sleep(_randomeTimeWating.Next(500, 1000));
 
 
                 // Получаем кнопку "Добавить в избранное" и жмем
@@ -122,13 +127,15 @@ namespace DomclickComplaint
                     // Прокручиваю страницу к элементу
                     ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", offer);
 
+                    Thread.Sleep(_randomeTimeWating.Next(700, 1700));
                     var setFavoriteOffer = offer.FindElement(By.CssSelector("button[data-e2e-id='product-snippet-favorite']"));
                     var clickableShowMoreButton = wait.Until(ExpectedConditions.ElementToBeClickable(setFavoriteOffer));
+                    Thread.Sleep(_randomeTimeWating.Next(500, 1500));
                     clickableShowMoreButton.Click();
                 }
                 catch (Exception) { }
 
-                Thread.Sleep(3000);
+                Thread.Sleep(_randomeTimeWating.Next(3000, 4200));
                 // Нажимаю кнопку "Пожаловаться"
                 try
                 {
@@ -138,7 +145,7 @@ namespace DomclickComplaint
                     var actions = new Actions(_driver);
                     actions.MoveToElement(offer).Perform();
 
-                    Thread.Sleep(1000);
+                    Thread.Sleep(_randomeTimeWating.Next(500, 1500));
 
                     complaintButton.Click();
                 }
@@ -147,7 +154,7 @@ namespace DomclickComplaint
                 // Выбираем рандомуню кнопку для жалобы
                 try
                 {
-                    Thread.Sleep(1500);
+                    Thread.Sleep(_randomeTimeWating.Next(1500, 3100));
                     var complaintElement = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".multipleButtonSelect-root-6-2-3.multipleButtonSelect-root--medium-6-2-3")));
 
                     var complaintOptions = complaintElement.FindElements(By.TagName("label"));
@@ -155,6 +162,7 @@ namespace DomclickComplaint
                     var randomIndex = new Random().Next(0, complaintOptions.Count);
 
                     var clickableComplaintOption = wait.Until(ExpectedConditions.ElementToBeClickable(complaintOptions[randomIndex]));
+                    Thread.Sleep(_randomeTimeWating.Next(500, 1500));
                     clickableComplaintOption.Click();
                 }
                 catch (Exception) { }
@@ -167,9 +175,9 @@ namespace DomclickComplaint
                     var complaintButton = _driver.FindElement(By.CssSelector(".modal-footer-button-12-1-1"));
                     var actions = new Actions(_driver);
                     actions.MoveToElement(complaintButton).Perform();
-                    Thread.Sleep(1000);
+                    Thread.Sleep(_randomeTimeWating.Next(500, 1500));
                     complaintButton.Click();
-                    Thread.Sleep(1000);
+                    Thread.Sleep(_randomeTimeWating.Next(500, 1500));
 
                     // Записываю в лог
                     string message = $"Жалоба на: {complainted.NameSeller} с номером телефона: {complainted.PhoneSeller}";
