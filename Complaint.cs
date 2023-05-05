@@ -215,6 +215,8 @@ namespace DomclickComplaint
             var offersListWhithoutHeart = new List<IWebElement>();
             var lastScrollPosition = 0;
 
+            Random randomOffers = new Random();
+
             // В цикле прокручиваю странице и собираю элементы, выдаю случайные 10 элементов.
             do
             {
@@ -283,7 +285,7 @@ namespace DomclickComplaint
             } while (offersListWhithoutHeart.Count < 30);
 
             // Выбираем 10 случайных элементов и добавляем их в новый список
-            var randomElementsList = driver.FindElements(By.CssSelector(".NrWKB.QSUyP")).OrderBy(x => Guid.NewGuid()).Take(10).ToList();
+            var randomElementsList = driver.FindElements(By.CssSelector(".NrWKB.QSUyP")).OrderBy(x => Guid.NewGuid()).Take(randomOffers.Next(7, 12)).ToList();
 
             // Возвращаем список со случайными элементами
             return randomElementsList;
