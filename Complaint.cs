@@ -51,7 +51,7 @@ namespace DomclickComplaint
             bool isAuthSeccess = await authorization.AuthenticateAsync(_driver);
 
             if (isAuthSeccess)
-            {                
+            {
                 wait.Until(_driver => ((IJavaScriptExecutor)_driver).ExecuteScript("return document.readyState").Equals("complete"));
                 _driver.Navigate().GoToUrl(_curRubric);
 
@@ -90,27 +90,14 @@ namespace DomclickComplaint
                     var showPhoneButton = offer.FindElement(By.CssSelector("button[data-e2e-id='show-phone-button']"));
                     var sellerName = offer.FindElement(By.CssSelector(".NNu3K6"));
 
-                    // Добавляю данные для записи в логи и добавления в файл Json
-                    complainted.PhoneSeller = showPhoneButton.Text;
-                    complainted.NameSeller = sellerName.Text;
-
-                    string fileName = "complaintedSellers.json";
-                    string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
-
-                    if (!File.Exists(filePath))
-                    {
-                        File.Create(filePath).Close();
-                    }
-
-                    string jsonString = JsonSerializer.Serialize(complainted);
-
-                    File.AppendAllText(filePath, jsonString + Environment.NewLine);
-
-
-                    Thread.Sleep(1000);
-
                     var clickableshowPhoneButton = wait.Until(ExpectedConditions.ElementToBeClickable(showPhoneButton));
                     clickableshowPhoneButton.Click();
+
+                    Thread.Sleep(2000);
+
+                    // Добавляю данные для записи в файл Json (база данных)
+                    complainted.PhoneSeller = showPhoneButton.Text;
+                    complainted.NameSeller = sellerName.Text;
                 }
                 catch (Exception) { }
 
@@ -156,6 +143,19 @@ namespace DomclickComplaint
                     Thread.Sleep(1000);
                     complaintButton.Click();
                     Thread.Sleep(1000);
+
+                    // При успешной подаче жалобы записываю в json (база данных)
+                    string fileName = "complaintedSellers.json";
+                    string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+
+                    if (!File.Exists(filePath))
+                    {
+                        File.Create(filePath).Close();
+                    }
+
+                    string jsonString = JsonSerializer.Serialize(complainted);
+
+                    File.AppendAllText(filePath, jsonString + Environment.NewLine);
                 }
                 catch (Exception) { }
             }
