@@ -64,6 +64,8 @@ namespace DomclickComplaint
                 List<IWebElement> sellersCards = await GetElementsAsync(_driver);
 
                 Send(sellersCards);
+
+                _driver.Quit();
             }
         }
 
@@ -107,6 +109,7 @@ namespace DomclickComplaint
                         {
                             if (complaintedSeller.PhoneSeller == showPhoneButton.Text)
                             {
+                                complainted = new();
                                 complaintedSellersList = new();
                                 phoneExists = true;
                                 break;
@@ -179,30 +182,37 @@ namespace DomclickComplaint
                     complaintButton.Click();
                     Thread.Sleep(_randomeTimeWating.Next(500, 1500));
 
-                    // Записываю в лог
-                    string message = $"Жалоба на: {complainted.NameSeller} с номером телефона: {complainted.PhoneSeller}";
-                    LogManager.LogMessage(message, _logFileName);
 
-                    // Записываю в json (база данных)
-                    string fileName = "complaintedSellers.json";
-                    string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+                    if (complainted.NameSeller != null && complainted.PhoneSeller != null)
+                    {  // Записываю в лог                    
+                        string message = $"Жалоба на: {complainted.NameSeller} с номером телефона: {complainted.PhoneSeller}";
+                        LogManager.LogMessage(message, _logFileName);
 
-                    if (File.Exists(filePath))
-                    {
-                        string json = File.ReadAllText(filePath);
-                        complaintedSellersList = JsonSerializer.Deserialize<List<ComplaintedSellers>>(json);
+                        // Записываю в json (база данных)
+                        string fileName = "complaintedSellers.json";
+                        string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+
+                        if (File.Exists(filePath))
+                        {
+                            string json = File.ReadAllText(filePath);
+                            complaintedSellersList = JsonSerializer.Deserialize<List<ComplaintedSellers>>(json);
+                        }
+
+                        complaintedSellersList.Add(complainted);
+
+                        JsonSerializerOptions options = new JsonSerializerOptions
+                        {
+                            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                            WriteIndented = true
+                        };
+
+                        string jsonString = JsonSerializer.Serialize(complaintedSellersList, options);
+                        File.WriteAllText(filePath, jsonString);
                     }
 
-                    complaintedSellersList.Add(complainted);
 
-                    JsonSerializerOptions options = new JsonSerializerOptions
-                    {
-                        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                        WriteIndented = true
-                    };
-
-                    string jsonString = JsonSerializer.Serialize(complaintedSellersList, options);
-                    File.WriteAllText(filePath, jsonString);
+                    complainted = new();
+                    complaintedSellersList = new();
                 }
                 catch (Exception) { }
             }

@@ -8,6 +8,16 @@ namespace DomclickComplaint
 
         static async Task Main(string[] args)
         {
+            while (true)
+            {
+                LaunchComplaint();
+
+                Thread.Sleep(TimeSpan.FromHours(12));
+            }
+        }
+
+        static void LaunchComplaint()
+        {
             string? logFileName = DateTime.Now.ToString("HH-mm-ss") + ".txt";
 
             Uri uri = ChooseCategory();

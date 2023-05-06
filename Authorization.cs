@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+
 //TODO Сделать движение курсора
 //TODO Сделать для всех задержек рандомное время
 
@@ -45,8 +47,15 @@ namespace DomclickComplaint
                 var authButton = wait.Until(ExpectedConditions.ElementExists(By.XPath("//div[@data-e2e-id='topline__sign-in']")));
 
                 // Перемещаю курсор к кнопке и кликаю
-                var action = new Actions(driver);
-                action.MoveToElement(authButton).Perform();
+                //var action = new Actions(driver);
+                //action.MoveToElement(authButton).Perform();
+
+                var actions = new Actions(driver);
+                actions.MoveByOffset(100, 100).Perform();
+
+
+                Thread.Sleep(_randomeTimeWating.Next(1000, 2500));
+
                 authButton.Click();
 
                 // Получаю input для ввода телефона для авторизации
@@ -68,7 +77,7 @@ namespace DomclickComplaint
                 var submitButton = wait.Until(ExpectedConditions.ElementExists(By.CssSelector("button[data-e2e-id='topline-login-form__submit-button']")));
 
                 // Перемещаю курсор к кнопке и кликаю
-                action.MoveToElement(submitButton).Perform();
+                //action.MoveToElement(submitButton).Perform();
                 Thread.Sleep(_randomeTimeWating.Next(700, 2000));
                 submitButton.Click();
                 //phoneNumberInput.Submit();
