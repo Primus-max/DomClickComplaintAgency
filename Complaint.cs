@@ -83,11 +83,22 @@ namespace DomclickComplaint
                 // Нажимаю на кнопку "Показать телефон"
                 try
                 {
+                    // Нахожу элементы на странице
                     var showPhoneButton = offer.FindElement(By.CssSelector("button[data-e2e-id='show-phone-button']"));
                     var sellerName = offer.FindElement(By.CssSelector(".NNu3K6"));
 
+                    // Прокручиваю до элемента sellerName
+                    ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", sellerName);
+
+                    // Ожидаю, пока showPhoneButton станет кликабельным
                     var clickableshowPhoneButton = wait.Until(ExpectedConditions.ElementToBeClickable(showPhoneButton));
+
+                    // Прокручиваю до элемента showPhoneButton
+                    ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", showPhoneButton);
+
+                    // Нажимаю на кнопку
                     clickableshowPhoneButton.Click();
+
 
                     Thread.Sleep(_randomeTimeWating.Next(3000, 5000));
 
@@ -132,9 +143,9 @@ namespace DomclickComplaint
 
                     Thread.Sleep(_randomeTimeWating.Next(700, 1700));
                     var setFavoriteOffer = offer.FindElement(By.CssSelector("button[data-e2e-id='product-snippet-favorite']"));
-                    var clickableShowMoreButton = wait.Until(ExpectedConditions.ElementToBeClickable(setFavoriteOffer));
+                    var clickableSetFavoriteOffer = wait.Until(ExpectedConditions.ElementToBeClickable(setFavoriteOffer));
                     Thread.Sleep(_randomeTimeWating.Next(500, 1500));
-                    clickableShowMoreButton.Click();
+                    clickableSetFavoriteOffer.Click();
                 }
                 catch (Exception) { }
 
