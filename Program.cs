@@ -10,9 +10,16 @@ namespace DomclickComplaint
         {
             while (true)
             {
-                LaunchComplaint();
+                try
+                {
+                    LaunchComplaint();
 
-                Thread.Sleep(TimeSpan.FromHours(12));
+                    Thread.Sleep(TimeSpan.FromHours(12));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"При запуске программы произошла ошибка: {ex.Message}");
+                }
             }
         }
 
