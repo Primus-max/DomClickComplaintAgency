@@ -174,13 +174,14 @@ namespace DomclickComplaint
 
                 try
                 {
-                    // Получаю кнопку "Пожаловаться"
+                    // Получаю кнопку "Пожаловаться" 
                     var complaintButton = _driver.FindElement(By.CssSelector(".modal-footer-button-12-1-1"));
-                    var actions = new Actions(_driver);
-                    actions.MoveToElement(complaintButton).Perform();
+                    // Прокручиваю страницу до кнопки "Пожаловаться"
+                    ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", complaintButton);
                     Thread.Sleep(_randomeTimeWating.Next(500, 1500));
                     complaintButton.Click();
                     Thread.Sleep(_randomeTimeWating.Next(500, 1500));
+
 
 
                     if (complainted.NameSeller != null && complainted.PhoneSeller != null)
