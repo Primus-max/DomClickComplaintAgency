@@ -12,9 +12,11 @@ namespace DomclickComplaint
             {
                 try
                 {
+                    // Запуска программы
                     LaunchComplaint();
 
-                    Thread.Sleep(TimeSpan.FromHours(12));
+                    // Задержка между сессиями работы программы
+                    Thread.Sleep(SetTimeDelay());
                 }
                 catch (Exception ex)
                 {
@@ -23,6 +25,7 @@ namespace DomclickComplaint
             }
         }
 
+        // Объединяющий метод для запуска программы
         static void LaunchComplaint()
         {
             string? logFileName = DateTime.Now.ToString("HH-mm-ss") + ".txt";
@@ -32,6 +35,31 @@ namespace DomclickComplaint
             Complaint complaint = new(uri, logFileName);
 
             complaint.SendComplaint();
+        }
+
+        // Время задержки запуска программы в часах
+        public static int SetTimeDelay()
+        {
+            string getDataFromUser;
+            int result = 0;
+
+
+            Console.WriteLine("Введите время задержки работы программы в часах");
+
+            getDataFromUser = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(getDataFromUser))
+            {
+                Console.WriteLine("Вы не ввели данные, попробуйте еще раз");
+                SetTimeDelay();
+            }
+            if (!int.TryParse(getDataFromUser, out result))
+            {
+                Console.WriteLine("Вы ввели не число, попробуйте еще раз");
+                SetTimeDelay();
+            }
+
+            return result;
         }
 
         // Метод выбора категории
@@ -60,6 +88,7 @@ namespace DomclickComplaint
                 else
                 {
                     Console.WriteLine("Некорректный выбор! Попробуйте еще раз.");
+                    ChooseCategory();
                 }
             }
 

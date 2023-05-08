@@ -121,7 +121,7 @@ namespace DomclickComplaint
                             if (complaintedSeller.PhoneSeller == showPhoneButton.Text)
                             {
                                 complainted = new();
-                                complaintedSellersList = new();
+
                                 phoneExists = true;
                                 break;
                             }
@@ -224,9 +224,10 @@ namespace DomclickComplaint
 
 
                     complainted = new();
-                    complaintedSellersList = new();
                 }
                 catch (Exception) { }
+
+                Thread.Sleep(_randomeTimeWating.Next(5000, 12000));
             }
         }
 
