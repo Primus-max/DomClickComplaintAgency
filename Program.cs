@@ -1,98 +1,91 @@
 ﻿using OpenQA.Selenium;
 using SeleniumUndetectedChromeDriver;
+using System.Threading;
 
 namespace DomclickComplaint
 {
     internal class Program
     {
-
         static async Task Main(string[] args)
         {
+            int delayProgram = SetTimeDelay();
+            Uri uri = ChooseCategory();
+
             while (true)
             {
                 try
                 {
-                    // Запуска программы
-                    LaunchComplaint();
+                    // Запуск программы
+                    LaunchComplaint(uri);
 
                     // Задержка между сессиями работы программы
-                    Thread.Sleep(SetTimeDelay());
+                    Thread.Sleep(delayProgram);
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"При запуске программы произошла ошибка: {ex.Message}");
-                }
+                catch (Exception) { }
             }
         }
 
         // Объединяющий метод для запуска программы
-        static void LaunchComplaint()
+        static void LaunchComplaint(Uri uri)
         {
-            string? logFileName = DateTime.Now.ToString("HH-mm-ss") + ".txt";
+            string logFileName = DateTime.Now.ToString("HH-mm-ss") + ".txt";
 
-            Uri uri = ChooseCategory();
-
-            Complaint complaint = new(uri, logFileName);
+            Complaint complaint = new Complaint(uri, logFileName);
 
             complaint.SendComplaint();
-        }
-
-        // Время задержки запуска программы в часах
-        public static int SetTimeDelay()
-        {
-            string getDataFromUser;
-            int result = 0;
-
-
-            Console.WriteLine("Введите время задержки работы программы в часах");
-
-            getDataFromUser = Console.ReadLine();
-
-            if (string.IsNullOrEmpty(getDataFromUser))
-            {
-                Console.WriteLine("Вы не ввели данные, попробуйте еще раз");
-                SetTimeDelay();
-            }
-            if (!int.TryParse(getDataFromUser, out result))
-            {
-                Console.WriteLine("Вы ввели не число, попробуйте еще раз");
-                SetTimeDelay();
-            }
-
-            return result;
         }
 
         // Метод выбора категории
         static Uri ChooseCategory()
         {
-            Uri uri;
+            Console.WriteLine("Выберите рубрику:");
+            Console.WriteLine("  1 - Квартиры");
+            Console.WriteLine("  2 - Комнаты");
 
-            while (true)
+            string choice = Console.ReadLine();
+
+            if (choice == "1")
             {
-                Console.WriteLine("Выберите рубрику:");
-                Console.WriteLine("  1 - Квартиры");
-                Console.WriteLine("  2 - Комнаты");
+                return new Uri("https://tomsk.domclick.ru/search?deal_type=sale&category=living&offer_type=flat&from=topline2020&address=d5883f07-6a8e-4ba2-b0de-c266d11dd0e4&aids=13667&offset=0");
+            }
+            else if (choice == "2")
+            {
+                return new Uri("https://tomsk.domclick.ru/search?category=living&deal_type=sale&offer_type=room&from=topline2020");
+            }
+            else
+            {
+                Console.WriteLine("Некорректный выбор! Попробуйте еще раз.");
+                return ChooseCategory();
+            }
+        }
 
-                string choice = Console.ReadLine();
+        // Время задержки запуска программы в часах
+        public static int SetTimeDelay()
+        {
+            int delayMilliseconds = 0;
 
-                if (choice == "1")
+            while (delayMilliseconds <= 0)
+            {
+                Console.WriteLine("Введите время задержки работы программы в часах:");
+
+                string input = Console.ReadLine();
+
+                if (!int.TryParse(input, out int delayHours))
                 {
-                    uri = new Uri("https://tomsk.domclick.ru/search?deal_type=sale&category=living&offer_type=flat&from=topline2020&address=d5883f07-6a8e-4ba2-b0de-c266d11dd0e4&aids=13667&offset=0");
-                    break;
+                    Console.WriteLine("Вы ввели не число. Попробуйте еще раз.");
+                    continue;
                 }
-                else if (choice == "2")
+
+                if (delayHours <= 0)
                 {
-                    uri = new Uri("https://tomsk.domclick.ru/search?category=living&deal_type=sale&offer_type=room&from=topline2020");
-                    break;
+                    Console.WriteLine("Время задержки должно быть положительным числом. Попробуйте еще раз.");
+                    continue;
                 }
-                else
-                {
-                    Console.WriteLine("Некорректный выбор! Попробуйте еще раз.");
-                    ChooseCategory();
-                }
+
+                delayMilliseconds = delayHours * 60 * 60 * 1000;
             }
 
-            return uri;
+            return delayMilliseconds;
         }
     }
 }

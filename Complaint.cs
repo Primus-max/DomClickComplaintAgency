@@ -169,7 +169,9 @@ namespace DomclickComplaint
                 try
                 {
                     Thread.Sleep(_randomeTimeWating.Next(1500, 3100));
-                    var complaintElement = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".multipleButtonSelect-root-6-2-3.multipleButtonSelect-root--medium-6-2-3")));
+                    //var complaintElement = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".multipleButtonSelect-root-7-0-1.multipleButtonSelect-root--medium-7-0-1")));
+
+                    var complaintElement = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class, 'multipleButtonSelect-root') and contains(@class, 'multipleButtonSelect-root--medium')]")));
 
                     var complaintOptions = complaintElement.FindElements(By.TagName("label"));
 
@@ -186,7 +188,10 @@ namespace DomclickComplaint
                 try
                 {
                     // Получаю кнопку "Пожаловаться" 
-                    var complaintButton = _driver.FindElement(By.CssSelector(".modal-footer-button-12-1-1"));
+                    var complaintButton = _driver.FindElement(By.CssSelector(".modal-footer-button-14-0-1"));
+                    //var complaintButton = _driver.FindElement(By.XPath("//div[contains(@class, 'modal-footer-button')]"));
+
+
                     // Прокручиваю страницу до кнопки "Пожаловаться"
                     ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", complaintButton);
                     Thread.Sleep(_randomeTimeWating.Next(500, 1500));
