@@ -69,8 +69,18 @@ namespace DomclickComplaint
             }
         }
 
+        // Отправка жалобы
         public void Send(List<IWebElement> sellersCards)
         {
+            try
+            {
+                var cookieBtn = _driver.FindElement(By.XPath("//div[contains(@class, 'cookie-button')]"));
+                cookieBtn.Click();
+                Thread.Sleep(1000);
+            }
+            catch (Exception) { }
+
+
             List<IWebElement> _sellersCards = sellersCards;
             List<ComplaintedSellers> complaintedSellersList = new List<ComplaintedSellers>();
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(30));
