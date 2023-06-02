@@ -31,7 +31,6 @@ public static class LogManager
         // сохраняем скриншот по пути screenshotFilePath
         // ...
     }
-
     public static void LogMessage(string message, string fileName)
     {
         string basePath = AppDomain.CurrentDomain.BaseDirectory;
@@ -39,11 +38,13 @@ public static class LogManager
         string folderPath = Path.Combine(basePath, programName, DateTime.Now.ToString("yyyy-MM-dd"));
         string filePath = Path.Combine(folderPath, fileName);
 
-        Directory.CreateDirectory(folderPath);
-
-
         try
         {
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
             using (var writer = new StreamWriter(filePath, true))
             {
                 writer.WriteLine(message);
@@ -54,7 +55,6 @@ public static class LogManager
             Console.WriteLine($"Ошибка записи в лог-файл: {ex.Message}");
         }
     }
-
 
     private static string GetLogFilePath()
     {

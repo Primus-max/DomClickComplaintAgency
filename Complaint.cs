@@ -61,9 +61,9 @@ namespace DomclickComplaint
 
                 Thread.Sleep(_randomeTimeWating.Next(1000, 2500));
 
-                List<IWebElement> sellersCards = await GetElementsAsync(_driver);
+                await GetElementsAsync(_driver);
 
-                Send(sellersCards);
+                //Send(sellersCards);
 
                 _driver.Quit();
             }
@@ -246,32 +246,88 @@ namespace DomclickComplaint
             }
         }
 
-        public async Task<List<IWebElement>> GetElementsAsync(IWebDriver driver)
+        public async Task GetElementsAsync(IWebDriver driver)
         {
             var elements = new List<IWebElement>();
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-            var offersListWhithoutHeart = new List<IWebElement>();
+            var offersList = new List<IWebElement>();
             var lastScrollPosition = 0;
+            bool IsPhoneExists = false;
+            int countComplainted = 0;
 
-            Random randomOffers = new Random();
+
+            Random random = new Random();
+            int randomOffers = random.Next(28, 36);
+
+            // Проверяю странице на предмет предложения принять куки и кликаю если есть такая кнопка
+            try
+            {
+                HandleCookieBanner();
+            }
+            catch (Exception) { }
+
+            //List<IWebElement> _sellersCards = sellersCards;
+            List<ComplaintedSellers> complaintedSellersList = new List<ComplaintedSellers>();
+            HashSet<IWebElement> clickedElements = new HashSet<IWebElement>();
+
+            ComplaintedSellers complainted = new();
+
 
             // В цикле прокручиваю страницу и собираю элементы.
             do
             {
                 try
                 {
-                    var offersList = driver.FindElements(By.CssSelector(".NrWKB.QSUyP")).ToList();
+                    offersList = driver.FindElements(By.CssSelector(".NrWKB.QSUyP")).ToList();
+
 
                     foreach (var offer in offersList)
                     {
-                        var childElements = offer.FindElements(By.CssSelector("[data-e2e-id='heart-outlined-icon']"));
-                        if (childElements.Count > 0)
+                        //IsPhoneExists = false;
+
+                        if (clickedElements.Contains(offer))
                         {
-                            offersListWhithoutHeart.AddRange(childElements);
+                            continue;
                         }
+
+                        try
+                        {
+                            var childWhithoutHeart = offer.FindElement(By.CssSelector("[data-e2e-id='heart-outlined-icon']"));
+                            // Место для чейна методов
+                            try
+                            {
+                                IsPhoneExists = ShowPhone(offer, wait, complaintedSellersList, ref complainted);
+                                if (IsPhoneExists) continue;
+                            }
+                            catch (Exception)
+                            {
+                                Console.WriteLine("Не удалось загрузить кнопку показать телефон или кликнуть на неё");
+                                continue;
+                            }
+
+                            Thread.Sleep(_randomeTimeWating.Next(3000, 4200));
+
+                            try
+                            {
+                                ReportComplaint(offer, wait, complaintedSellersList, ref complainted);
+                            }
+                            catch (Exception) { }
+
+                            try
+                            {
+                                SubmitComplaint(complainted, wait, complaintedSellersList);
+                                AddToFavorites(offer, wait);
+                                clickedElements.Add(offer);
+                                countComplainted++;
+                            }
+                            catch (Exception) { }
+
+                            Thread.Sleep(_randomeTimeWating.Next(5000, 12000));
+                        }
+                        catch (Exception) { }
                     }
 
-                    if (offersListWhithoutHeart.Count < 30)
+                    if (clickedElements.Count < randomOffers)
                     {
                         var lastOfferElement = offersList.Last();
                         var lastOfferPositionY = lastOfferElement.Location.Y + 230;
@@ -320,13 +376,148 @@ namespace DomclickComplaint
                     }
                 }
                 catch (Exception) { }
-            } while (offersListWhithoutHeart.Count < 30);
+            } while (clickedElements.Count < randomOffers);
 
-            // Выбираем 10 случайных элементов и добавляем их в новый список
-            var randomElementsList = driver.FindElements(By.CssSelector(".NrWKB.QSUyP")).OrderBy(x => Guid.NewGuid()).Take(randomOffers.Next(9, 24)).ToList();
+            Console.WriteLine($"Всего отправлено жалоб - {countComplainted}");
+        }
 
-            // Возвращаем список со случайными элементами
-            return randomElementsList;
+        private void HandleCookieBanner()
+        {
+            var cookieBtn = _driver.FindElement(By.XPath("//div[contains(@class, 'cookie-button')]"));
+            cookieBtn.Click();
+            Thread.Sleep(1000);
+        }
+
+        private bool ShowPhone(IWebElement offer, WebDriverWait wait, List<ComplaintedSellers> complaintedSellersList, ref ComplaintedSellers complainted)
+        {
+            IWebElement sellerName = null;
+
+            var showPhoneButton = offer.FindElement(By.CssSelector("button[data-e2e-id='show-phone-button']"));
+
+            try
+            {
+                sellerName = offer.FindElement(By.CssSelector(".NNu3K6"));
+                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", sellerName);
+                complainted.NameSeller = sellerName.Text;
+            }
+            catch (Exception)
+            {
+                complainted.NameSeller = "Unknown";
+            }
+
+            var clickableshowPhoneButton = wait.Until(ExpectedConditions.ElementToBeClickable(showPhoneButton));
+
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", showPhoneButton);
+
+            clickableshowPhoneButton.Click();
+
+            Thread.Sleep(_randomeTimeWating.Next(3000, 5000));
+
+            complainted.PhoneSeller = showPhoneButton.Text;
+            //complainted.NameSeller = sellerName.Text;
+
+            string fileName = "complaintedSellers.json";
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    string json = File.ReadAllText(filePath);
+                    complaintedSellersList = JsonSerializer.Deserialize<List<ComplaintedSellers>>(json);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Ошибка при десериализации файла: " + ex.Message);
+                }
+            }
+
+            string phone = showPhoneButton.Text;
+            foreach (ComplaintedSellers complaintedSeller in complaintedSellersList)
+            {
+                if (complaintedSeller.PhoneSeller == phone)
+                {
+                    complainted = new();
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void AddToFavorites(IWebElement offer, WebDriverWait wait)
+        {
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", offer);
+            Thread.Sleep(_randomeTimeWating.Next(700, 1700));
+
+            var setFavoriteOffer = offer.FindElement(By.CssSelector("button[data-e2e-id='product-snippet-favorite']"));
+            var clickableSetFavoriteOffer = wait.Until(ExpectedConditions.ElementToBeClickable(setFavoriteOffer));
+            Thread.Sleep(_randomeTimeWating.Next(500, 1500));
+            clickableSetFavoriteOffer.Click();
+        }
+
+        private void ReportComplaint(IWebElement offer, WebDriverWait wait, List<ComplaintedSellers> complaintedSellersList, ref ComplaintedSellers complainted)
+        {
+            Thread.Sleep(_randomeTimeWating.Next(1500, 3000));
+            var complaintButton = offer.FindElement(By.CssSelector("button[data-e2e-id='snippet-complaint-button']"));
+
+            var jsExecutor = (IJavaScriptExecutor)_driver;
+            jsExecutor.ExecuteScript("arguments[0].scrollIntoView(true);", complaintButton);
+
+            Thread.Sleep(_randomeTimeWating.Next(500, 1500));
+            jsExecutor.ExecuteScript("arguments[0].dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));", complaintButton);
+
+            Thread.Sleep(_randomeTimeWating.Next(500, 1500));
+            jsExecutor.ExecuteScript("arguments[0].click();", complaintButton);
+
+            var complaintElement = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class, 'multipleButtonSelect-root') and contains(@class, 'multipleButtonSelect-root--medium')]")));
+
+            var complaintOptions = complaintElement.FindElements(By.TagName("label"));
+
+            var randomIndex = new Random().Next(0, complaintOptions.Count);
+
+            var clickableComplaintOption = wait.Until(ExpectedConditions.ElementToBeClickable(complaintOptions[randomIndex]));
+            Thread.Sleep(_randomeTimeWating.Next(500, 1500));
+            clickableComplaintOption.Click();
+        }
+
+        private void SubmitComplaint(ComplaintedSellers complainted, WebDriverWait wait, List<ComplaintedSellers> complaintedSellersList)
+        {
+            Thread.Sleep(_randomeTimeWating.Next(1500, 3000));
+            var complaintButton = _driver.FindElement(By.CssSelector(".modal-footer-button-14-0-1"));
+
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", complaintButton);
+            Thread.Sleep(_randomeTimeWating.Next(500, 1500));
+            complaintButton.Click();
+            Thread.Sleep(_randomeTimeWating.Next(500, 1500));
+
+            if (complainted.NameSeller != null && complainted.PhoneSeller != null)
+            {
+                string message = $"Жалоба на: {complainted.NameSeller} с номером телефона: {complainted.PhoneSeller}";
+                LogManager.LogMessage(message, _logFileName);
+
+                string fileName = "complaintedSellers.json";
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+
+                if (File.Exists(filePath))
+                {
+                    string json = File.ReadAllText(filePath);
+                    complaintedSellersList = JsonSerializer.Deserialize<List<ComplaintedSellers>>(json);
+                }
+
+                complaintedSellersList?.Add(complainted);
+
+                JsonSerializerOptions options = new JsonSerializerOptions
+                {
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                    WriteIndented = true
+                };
+
+                string jsonString = JsonSerializer.Serialize(complaintedSellersList, options);
+                File.WriteAllText(filePath, jsonString);
+            }
+
+            complainted = new();
         }
     }
 }
