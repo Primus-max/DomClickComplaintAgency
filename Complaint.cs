@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DomclickComplaint
@@ -18,15 +19,17 @@ namespace DomclickComplaint
         Uri baseUri = new("https://domclick.ru");
 
         private UndetectedChromeDriver? _driver;
-        private Uri _curRubric;
+        private Uri _curRubric = new Uri("https://domclick.ru/search?deal_type=sale&category=living&offer_type=flat&offer_type=layout");
         private string? _logFileName;
+        private string? _sellerName;
 
         private Random _randomeTimeWating = new Random();
 
-        public Complaint(Uri UrlRubric, string logFileName)
-        {
-            _curRubric = UrlRubric;
+        int _wrongComplaint = 0;
+        public Complaint(string logFileName, string sellerName)
+        {            
             _logFileName = logFileName;
+            _sellerName = sellerName;
         }
 
         public async void SendComplaint()
@@ -46,6 +49,7 @@ namespace DomclickComplaint
             catch (Exception ex)
             {
                 Console.WriteLine($"Не удалось перейти по указанному адресу по причине: {ex.Message}");
+
             }
 
 
@@ -68,7 +72,7 @@ namespace DomclickComplaint
                 _driver.Quit();
             }
         }
-                      
+
 
         public async Task GetElementsAsync(IWebDriver driver)
         {
@@ -81,7 +85,20 @@ namespace DomclickComplaint
 
 
             Random random = new Random();
-            int randomOffers = random.Next(28, 36);
+            int randomOffers = random.Next(80, 112);
+
+            // Находим элемент по атрибуту data-e2e-id
+            IWebElement element = driver.FindElement(By.CssSelector("[data-e2e-id='offers-count']"));
+
+            // Получаем текстовое значение элемента
+            string text = element.Text;
+
+            // Удаление букв с использованием регулярного выражения
+            string digitsOnly = Regex.Replace(text, "[^0-9]", "");
+
+            // Преобразование строки с цифрами в число
+            int number = int.Parse(digitsOnly);
+
 
             // Проверяю странице на предмет предложения принять куки и кликаю если есть такая кнопка
             try
@@ -117,7 +134,7 @@ namespace DomclickComplaint
                         try
                         {
                             var childWhithoutHeart = offer.FindElement(By.CssSelector("[data-e2e-id='heart-outlined-icon']"));
-                            // Место для чейна методов
+
                             try
                             {
                                 IsPhoneExists = ShowPhone(offer, wait, complaintedSellersList, ref complainted);
@@ -125,7 +142,16 @@ namespace DomclickComplaint
                             }
                             catch (Exception)
                             {
-                                Console.WriteLine("Не удалось загрузить кнопку показать телефон или кликнуть на неё");
+                                _wrongComplaint++;
+
+                                if (_wrongComplaint > randomOffers)
+                                {
+                                    Console.WriteLine($"Что то пошло не так, был превышен лимит попыток нажатия на кнопку {_wrongComplaint} , переподключаюсь...");
+                                    //_driver.Quit();
+                                    Thread.Sleep(5000);
+                                    SendComplaint();
+                                    return;
+                                }
                                 continue;
                             }
 
@@ -340,8 +366,6 @@ namespace DomclickComplaint
                 string jsonString = JsonSerializer.Serialize(complaintedSellersList, options);
                 File.WriteAllText(filePath, jsonString);
             }
-
-            complainted = new();
         }
     }
 }

@@ -9,14 +9,15 @@ namespace DomclickComplaint
         static async Task Main(string[] args)
         {
             int delayProgram = SetTimeDelay();
-            Uri uri = ChooseCategory();
+            string sellerName = ChooseSellerForComplaint();
+            Uri uri = new Uri("https://domclick.ru/");
 
             while (true)
             {
                 try
                 {
                     // Запуск программы
-                    LaunchComplaint(uri);
+                    LaunchComplaint(uri, sellerName);
 
                     // Задержка между сессиями работы программы
                     Thread.Sleep(delayProgram);
@@ -26,37 +27,27 @@ namespace DomclickComplaint
         }
 
         // Объединяющий метод для запуска программы
-        static void LaunchComplaint(Uri uri)
+        static void LaunchComplaint(Uri uri, string sellerName)
         {
             string logFileName = DateTime.Now.ToString("HH-mm-ss") + ".txt";
 
-            Complaint complaint = new Complaint(uri, logFileName);
+            Complaint complaint = new Complaint(logFileName, sellerName);
 
             complaint.SendComplaint();
         }
 
         // Метод выбора категории
-        static Uri ChooseCategory()
+        static string ChooseSellerForComplaint()
         {
-            Console.WriteLine("Выберите рубрику:");
-            Console.WriteLine("  1 - Квартиры");
-            Console.WriteLine("  2 - Комнаты");
+            Console.WriteLine("Введите имя рилтэра или название агенства:");
+            string sellerName = Console.ReadLine();
 
-            string choice = Console.ReadLine();
-
-            if (choice == "1")
-            {
-                return new Uri("https://tomsk.domclick.ru/search?deal_type=sale&category=living&offer_type=flat&from=topline2020&address=d5883f07-6a8e-4ba2-b0de-c266d11dd0e4&aids=13667&offset=0");
+            while (string.IsNullOrEmpty(sellerName)) 
+            {                
+                ChooseSellerForComplaint();
             }
-            else if (choice == "2")
-            {
-                return new Uri("https://tomsk.domclick.ru/search?category=living&deal_type=sale&offer_type=room&from=topline2020");
-            }
-            else
-            {
-                Console.WriteLine("Некорректный выбор! Попробуйте еще раз.");
-                return ChooseCategory();
-            }
+            
+            return sellerName.Trim();
         }
 
         // Время задержки запуска программы в часах

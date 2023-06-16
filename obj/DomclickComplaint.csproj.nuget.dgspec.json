@@ -1,27 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "Z:\\Programming\\ProjectC#\\DomclickComplaint\\DomclickComplaint.csproj": {}
+    "E:\\projects\\DomclickComplaint\\DomclickComplaint.csproj": {}
   },
   "projects": {
-    "Z:\\Programming\\ProjectC#\\DomclickComplaint\\DomclickComplaint.csproj": {
+    "E:\\projects\\DomclickComplaint\\DomclickComplaint.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "Z:\\Programming\\ProjectC#\\DomclickComplaint\\DomclickComplaint.csproj",
+        "projectUniqueName": "E:\\projects\\DomclickComplaint\\DomclickComplaint.csproj",
         "projectName": "DomclickComplaint",
-        "projectPath": "Z:\\Programming\\ProjectC#\\DomclickComplaint\\DomclickComplaint.csproj",
-        "packagesPath": "C:\\Users\\SKTV-1\\.nuget\\packages\\",
-        "outputPath": "Z:\\Programming\\ProjectC#\\DomclickComplaint\\obj\\",
+        "projectPath": "E:\\projects\\DomclickComplaint\\DomclickComplaint.csproj",
+        "packagesPath": "C:\\Users\\Goga\\.nuget\\packages\\",
+        "outputPath": "E:\\projects\\DomclickComplaint\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "Z:\\Programs\\VS\\Shared\\NuGetPackages",
-          "Z:\\Microsoft\\Xamarin\\NuGet\\"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\SKTV-1\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Goga\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -65,7 +63,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -74,7 +73,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
         }
       }
     }
