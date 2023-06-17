@@ -39,15 +39,15 @@ namespace DomclickComplaint
         // Метод выбора категории
         static string ChooseSellerForComplaint()
         {
-            Console.WriteLine("Введите имя рилтэра или название агенства:");
-            string sellerName = Console.ReadLine();
+            Console.WriteLine("Введите номер телефона в таком формате +7 (909) 548-60-37:");
+            string sellerPhone = Console.ReadLine();
 
-            while (string.IsNullOrEmpty(sellerName)) 
+            while (string.IsNullOrEmpty(sellerPhone)) 
             {                
                 ChooseSellerForComplaint();
             }
             
-            return sellerName.Trim();
+            return sellerPhone.Trim();
         }
 
         // Время задержки запуска программы в часах

@@ -19,17 +19,17 @@ namespace DomclickComplaint
         Uri baseUri = new("https://domclick.ru");
 
         private UndetectedChromeDriver? _driver;
-        private Uri _curRubric = new Uri("https://domclick.ru/search?deal_type=sale&category=living&offer_type=flat&offer_type=layout");
+        private Uri _curRubric = new Uri("https://tomsk.domclick.ru/search?deal_type=sale&category=living&offer_type=flat&offer_type=layout&aids=13675");
         private string? _logFileName;
-        private string? _sellerName;
+        private string? _sellerPhone;
 
         private Random _randomeTimeWating = new Random();
 
         int _wrongComplaint = 0;
-        public Complaint(string logFileName, string sellerName)
+        public Complaint(string logFileName, string sellerPhone)
         {            
             _logFileName = logFileName;
-            _sellerName = sellerName;
+            _sellerPhone = sellerPhone;
         }
 
         public async void SendComplaint()
@@ -73,7 +73,6 @@ namespace DomclickComplaint
             }
         }
 
-
         public async Task GetElementsAsync(IWebDriver driver)
         {
             var elements = new List<IWebElement>();
@@ -86,18 +85,26 @@ namespace DomclickComplaint
 
             Random random = new Random();
             int randomOffers = random.Next(80, 112);
+            int totalCount = 0;
+            try
+            {
+                // Находим элемент по атрибуту data-e2e-id
+                IWebElement totalCountOffers = driver.FindElement(By.CssSelector("[data-e2e-id='offers-count']"));
 
-            // Находим элемент по атрибуту data-e2e-id
-            IWebElement element = driver.FindElement(By.CssSelector("[data-e2e-id='offers-count']"));
+                // Получаем текстовое значение элемента
+                string textFromElement = totalCountOffers.Text;
 
-            // Получаем текстовое значение элемента
-            string text = element.Text;
+                // Удаление букв с использованием регулярного выражения
+                string digitsOnly = Regex.Replace(textFromElement, "[^0-9]", "");
 
-            // Удаление букв с использованием регулярного выражения
-            string digitsOnly = Regex.Replace(text, "[^0-9]", "");
+                // Преобразование строки с цифрами в число
+                totalCount = int.Parse(digitsOnly);
+            }
+            catch (Exception)
+            {
 
-            // Преобразование строки с цифрами в число
-            int number = int.Parse(digitsOnly);
+                throw;
+            }
 
 
             // Проверяю странице на предмет предложения принять куки и кликаю если есть такая кнопка
@@ -138,7 +145,7 @@ namespace DomclickComplaint
                             try
                             {
                                 IsPhoneExists = ShowPhone(offer, wait, complaintedSellersList, ref complainted);
-                                if (IsPhoneExists) continue;
+                                if (!IsPhoneExists) continue;
                             }
                             catch (Exception)
                             {
@@ -226,7 +233,7 @@ namespace DomclickComplaint
                     }
                 }
                 catch (Exception) { }
-            } while (clickedElements.Count < randomOffers);
+            } while (clickedElements.Count < totalCount);
 
             Console.WriteLine($"Всего отправлено жалоб - {clickedElements.Count}");
         }
@@ -264,7 +271,7 @@ namespace DomclickComplaint
             Thread.Sleep(_randomeTimeWating.Next(3000, 5000));
 
             complainted.PhoneSeller = showPhoneButton.Text;
-            //complainted.NameSeller = sellerName.Text;
+            //complainted.NameSeller = sellerPhone.Text;
 
             string fileName = "complaintedSellers.json";
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
@@ -285,7 +292,7 @@ namespace DomclickComplaint
             string phone = showPhoneButton.Text;
             foreach (ComplaintedSellers complaintedSeller in complaintedSellersList)
             {
-                if (complaintedSeller.PhoneSeller == phone)
+                if (Equals(_sellerPhone, phone))
                 {
                     complainted = new();
                     return true;
@@ -334,6 +341,9 @@ namespace DomclickComplaint
         private void SubmitComplaint(ComplaintedSellers complainted, WebDriverWait wait, List<ComplaintedSellers> complaintedSellersList)
         {
             Thread.Sleep(_randomeTimeWating.Next(1500, 3000));
+
+            // data-e2e-id="heart-icon"
+
             var complaintButton = _driver.FindElement(By.CssSelector(".modal-footer-button-14-0-1"));
 
             ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", complaintButton);
