@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
@@ -12,6 +13,9 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using Serilog;
+using Serilog.Events;
+
 namespace DomclickComplaint
 {
     public class Complaint
@@ -21,15 +25,15 @@ namespace DomclickComplaint
         private UndetectedChromeDriver? _driver;
         private Uri _curRubric = new Uri("https://tomsk.domclick.ru/search?deal_type=sale&category=living&offer_type=flat&offer_type=layout&aids=13675");
         private string? _logFileName;
-        private string? _sellerPhone;
+        private string? _sellerName;
 
         private Random _randomeTimeWating = new Random();
 
         int _wrongComplaint = 0;
-        public Complaint(string logFileName, string sellerPhone)
+        public Complaint(string logFileName, string sellerName)
         {            
             _logFileName = logFileName;
-            _sellerPhone = sellerPhone;
+            _sellerName = sellerName;
         }
 
         public async void SendComplaint()
@@ -83,8 +87,8 @@ namespace DomclickComplaint
             int countComplainted = 0;
 
 
-            Random random = new Random();
-            int randomOffers = random.Next(80, 112);
+            //Random random = new Random();
+            //int randomOffers = random.Next(80, 112);
             int totalCount = 0;
             try
             {
@@ -100,10 +104,9 @@ namespace DomclickComplaint
                 // Преобразование строки с цифрами в число
                 totalCount = int.Parse(digitsOnly);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                Console.WriteLine($"Произошла ошибка в методе GetElementsAsync: {ex.ToString()}");
             }
 
 
@@ -117,6 +120,7 @@ namespace DomclickComplaint
             //List<IWebElement> _sellersCards = sellersCards;
             List<ComplaintedSellers> complaintedSellersList = new List<ComplaintedSellers>();
             HashSet<IWebElement> clickedElements = new HashSet<IWebElement>();
+            IWebElement sellerName;
 
             ComplaintedSellers complainted = new();
 
@@ -127,9 +131,11 @@ namespace DomclickComplaint
                 try
                 {
                     offersList = driver.FindElements(By.CssSelector(".NrWKB.QSUyP")).ToList();
+                }
+                catch (Exception) { }
 
 
-                    foreach (var offer in offersList)
+                foreach (var offer in offersList)
                     {
                         //IsPhoneExists = false;
 
@@ -138,53 +144,62 @@ namespace DomclickComplaint
                             continue;
                         }
 
-                        try
-                        {
-                            var childWhithoutHeart = offer.FindElement(By.CssSelector("[data-e2e-id='heart-outlined-icon']"));
+                    try
+                    {
+                        sellerName = offer.FindElement(By.CssSelector(".ssWXua.GJwGWk"));
+                        string sellerNameText = sellerName.Text;
 
-                            try
-                            {
-                                IsPhoneExists = ShowPhone(offer, wait, complaintedSellersList, ref complainted);
-                                if (!IsPhoneExists) continue;
-                            }
-                            catch (Exception)
-                            {
-                                _wrongComplaint++;
+                        if (!Equals(_sellerName, sellerNameText)) continue;
 
-                                if (_wrongComplaint > randomOffers)
-                                {
-                                    Console.WriteLine($"Что то пошло не так, был превышен лимит попыток нажатия на кнопку {_wrongComplaint} , переподключаюсь...");
-                                    //_driver.Quit();
-                                    Thread.Sleep(5000);
-                                    SendComplaint();
-                                    return;
-                                }
-                                continue;
-                            }
+                        ReportComplaint(offer, wait, complaintedSellersList, ref complainted);
+                        SubmitComplaint(complainted, wait, complaintedSellersList);
+                        countComplainted++;
 
-                            Thread.Sleep(_randomeTimeWating.Next(3000, 4200));
+                        //var childWhithoutHeart = offer.FindElement(By.CssSelector("[data-e2e-id='heart-outlined-icon']"));
 
-                            try
-                            {
-                                ReportComplaint(offer, wait, complaintedSellersList, ref complainted);
-                            }
-                            catch (Exception) { }
+                        //try
+                        //{
+                        //    IsPhoneExists = ShowPhone(offer, wait, complaintedSellersList, ref complainted);
+                        //    if (!IsPhoneExists) continue;
+                        //}
+                        //catch (Exception)
+                        //{
+                        //    _wrongComplaint++;
 
-                            try
-                            {
-                                SubmitComplaint(complainted, wait, complaintedSellersList);
-                                AddToFavorites(offer, wait);
-                                clickedElements.Add(offer);
-                                countComplainted++;
-                            }
-                            catch (Exception) { }
+                        //    if (_wrongComplaint > randomOffers)
+                        //    {
+                        //        Console.WriteLine($"Что то пошло не так, был превышен лимит попыток нажатия на кнопку {_wrongComplaint} , переподключаюсь...");
+                        //        //_driver.Quit();
+                        //        Thread.Sleep(5000);
+                        //        SendComplaint();
+                        //        return;
+                        //    }
+                        //    continue;
+                        //}
 
-                            Thread.Sleep(_randomeTimeWating.Next(5000, 12000));
-                        }
-                        catch (Exception) { }
+                        //Thread.Sleep(_randomeTimeWating.Next(3000, 4200));
+
+                        //try
+                        //{
+                        //    ReportComplaint(offer, wait, complaintedSellersList, ref complainted);
+                        //}
+                        //catch (Exception) { }
+
+                        //try
+                        //{
+                        //    SubmitComplaint(complainted, wait, complaintedSellersList);
+                        //    //AddToFavorites(offer, wait);
+                        //    //clickedElements.Add(offer);
+                        //    countComplainted++;
+                        //}
+                        //catch (Exception) { }
+
+                        Thread.Sleep(_randomeTimeWating.Next(5000, 12000));
                     }
+                    catch (Exception){ }
+                   
 
-                    if (clickedElements.Count < randomOffers)
+                    if (clickedElements.Count < totalCount)
                     {
                         var lastOfferElement = offersList.Last();
                         var lastOfferPositionY = lastOfferElement.Location.Y + 230;
@@ -232,7 +247,7 @@ namespace DomclickComplaint
 
                     }
                 }
-                catch (Exception) { }
+               
             } while (clickedElements.Count < totalCount);
 
             Console.WriteLine($"Всего отправлено жалоб - {clickedElements.Count}");
@@ -249,7 +264,7 @@ namespace DomclickComplaint
         {
             IWebElement sellerName = null;
 
-            var showPhoneButton = offer.FindElement(By.CssSelector("button[data-e2e-id='show-phone-button']"));
+            var showPhoneButton = offer.FindElement(By.CssSelector("button[data-e2e-id='show-curSellerName-button']"));
 
             try
             {
@@ -271,7 +286,7 @@ namespace DomclickComplaint
             Thread.Sleep(_randomeTimeWating.Next(3000, 5000));
 
             complainted.PhoneSeller = showPhoneButton.Text;
-            //complainted.NameSeller = sellerPhone.Text;
+            //complainted.NameSeller = sellerName.Text;
 
             string fileName = "complaintedSellers.json";
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
@@ -289,10 +304,10 @@ namespace DomclickComplaint
                 }
             }
 
-            string phone = showPhoneButton.Text;
+            string curSellerName = sellerName.Text;
             foreach (ComplaintedSellers complaintedSeller in complaintedSellersList)
             {
-                if (Equals(_sellerPhone, phone))
+                if (Equals(_sellerName, curSellerName))
                 {
                     complainted = new();
                     return true;
@@ -338,7 +353,7 @@ namespace DomclickComplaint
             clickableComplaintOption.Click();
         }
 
-        private void SubmitComplaint(ComplaintedSellers complainted, WebDriverWait wait, List<ComplaintedSellers> complaintedSellersList)
+        private void SubmitComplaint(ComplaintedSellers complainted, WebDriverWait wait, List<ComplaintedSellers>? complaintedSellersList)
         {
             Thread.Sleep(_randomeTimeWating.Next(1500, 3000));
 
@@ -376,6 +391,14 @@ namespace DomclickComplaint
                 string jsonString = JsonSerializer.Serialize(complaintedSellersList, options);
                 File.WriteAllText(filePath, jsonString);
             }
+        }
+
+        private void InitLogger()
+        {
+            Serilog.Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.File("log.txt", rollingInterval: RollingInterval.Day) // Указываем имя файла и интервал для его перекрытия
+            .CreateLogger();
         }
     }
 }

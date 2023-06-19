@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "z0CKp5jk8mRD8O82Kpgjn/iG9+6h9Oo4HUa4qQ0MF2ESX+Xm86yZSGmT8EldyafoszgAsxDSnlsC5G8H8JO9cg==",
+  "dgSpecHash": "dyPr89DKQrMC2tw7zBoz/Ed778BRJTEgst9cUE7VEKifCLZt84dYCMAI+guJdmzACWWkwld9wW5szfNCuajSLg==",
   "success": true,
   "projectFilePath": "E:\\projects\\DomclickComplaint\\DomclickComplaint.csproj",
   "expectedPackageFiles": [
@@ -13,6 +13,8 @@
     "C:\\Users\\Goga\\.nuget\\packages\\runtime.native.system.io.compression\\4.3.0\\runtime.native.system.io.compression.4.3.0.nupkg.sha512",
     "C:\\Users\\Goga\\.nuget\\packages\\selenium.undetectedchromedriver\\1.1.1\\selenium.undetectedchromedriver.1.1.1.nupkg.sha512",
     "C:\\Users\\Goga\\.nuget\\packages\\selenium.webdriver\\4.1.1\\selenium.webdriver.4.1.1.nupkg.sha512",
+    "C:\\Users\\Goga\\.nuget\\packages\\serilog\\2.12.0\\serilog.2.12.0.nupkg.sha512",
+    "C:\\Users\\Goga\\.nuget\\packages\\serilog.sinks.file\\5.0.0\\serilog.sinks.file.5.0.0.nupkg.sha512",
     "C:\\Users\\Goga\\.nuget\\packages\\system.buffers\\4.3.0\\system.buffers.4.3.0.nupkg.sha512",
     "C:\\Users\\Goga\\.nuget\\packages\\system.collections\\4.3.0\\system.collections.4.3.0.nupkg.sha512",
     "C:\\Users\\Goga\\.nuget\\packages\\system.diagnostics.debug\\4.3.0\\system.diagnostics.debug.4.3.0.nupkg.sha512",

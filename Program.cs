@@ -39,7 +39,7 @@ namespace DomclickComplaint
         // Метод выбора категории
         static string ChooseSellerForComplaint()
         {
-            Console.WriteLine("Введите номер телефона в таком формате +7 (909) 548-60-37:");
+            Console.WriteLine("Введите название агенства");
             string sellerPhone = Console.ReadLine();
 
             while (string.IsNullOrEmpty(sellerPhone)) 
