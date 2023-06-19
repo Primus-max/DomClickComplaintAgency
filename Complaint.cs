@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 
 using Serilog;
 using Serilog.Events;
+using Log = Serilog.Log;
 
 namespace DomclickComplaint
 {
@@ -31,9 +32,11 @@ namespace DomclickComplaint
 
         int _wrongComplaint = 0;
         public Complaint(string logFileName, string sellerName)
-        {            
+        {
             _logFileName = logFileName;
             _sellerName = sellerName;
+
+            InitLogger();
         }
 
         public async void SendComplaint()
@@ -83,12 +86,9 @@ namespace DomclickComplaint
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
             var offersList = new List<IWebElement>();
             var lastScrollPosition = 0;
-            bool IsPhoneExists = false;
+
             int countComplainted = 0;
 
-
-            //Random random = new Random();
-            //int randomOffers = random.Next(80, 112);
             int totalCount = 0;
             try
             {
@@ -106,7 +106,7 @@ namespace DomclickComplaint
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Произошла ошибка в методе GetElementsAsync: {ex.ToString()}");
+                Console.WriteLine($"Не удалось полуть totalCountOffers: {ex.Message}");
             }
 
 
@@ -120,7 +120,7 @@ namespace DomclickComplaint
             //List<IWebElement> _sellersCards = sellersCards;
             List<ComplaintedSellers> complaintedSellersList = new List<ComplaintedSellers>();
             HashSet<IWebElement> clickedElements = new HashSet<IWebElement>();
-            IWebElement sellerName;
+            IWebElement? sellerName = null;
 
             ComplaintedSellers complainted = new();
 
@@ -132,72 +132,73 @@ namespace DomclickComplaint
                 {
                     offersList = driver.FindElements(By.CssSelector(".NrWKB.QSUyP")).ToList();
                 }
-                catch (Exception) { }
+                catch (Exception ex)
+                {
+                    Log.Error($"Не удалось получить offersList {ex.Message}");
+                }
 
 
                 foreach (var offer in offersList)
+                {
+                    //IsPhoneExists = false;
+
+                    if (clickedElements.Contains(offer))
                     {
-                        //IsPhoneExists = false;
+                        continue;
+                    }
 
-                        if (clickedElements.Contains(offer))
-                        {
-                            continue;
-                        }
 
+                    // Если этот класс на странице, значит имена не показываются class="RMRbUr QlOLRO"
                     try
                     {
-                        sellerName = offer.FindElement(By.CssSelector(".ssWXua.GJwGWk"));
-                        string sellerNameText = sellerName.Text;
+                        sellerName = offer.FindElement(By.CssSelector(".NNu3K6"));
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"Не удалось получить sellerName {ex.Message}");
+                        continue;
+                    }
 
-                        if (!Equals(_sellerName, sellerNameText)) continue;
+                    string? sellerNameText = sellerName?.Text;
+
+                    if (Equals(_sellerName, sellerNameText))
+                    {
+
+                        IWebElement? objAdress = null;
+                        IWebElement? objPrice = null;
+                        ComplaintedSellers complaintedSellers = new ComplaintedSellers();
+
+                        try
+                        {
+                            // Получаю адресс
+                            objAdress = offer.FindElement(By.CssSelector(".RMRbUr.Wzltww.ldTPKa"));
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error($"Не удалось получить адресс объекта {ex.Message}");
+                        }
+
+                        try
+                        {
+                            // Получаю цену
+                            objPrice = offer.FindElement(By.CssSelector("._5oAgZI.Z4r7pA"));
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error($"Не удалось получить цену объекта {ex.Message}");
+                        }
+
+
+                        complaintedSellers.ObjectAdress = objAdress?.Text;
+                        complaintedSellers.ObjectPrice = objPrice?.Text;
 
                         ReportComplaint(offer, wait, complaintedSellersList, ref complainted);
                         SubmitComplaint(complainted, wait, complaintedSellersList);
+
                         countComplainted++;
-
-                        //var childWhithoutHeart = offer.FindElement(By.CssSelector("[data-e2e-id='heart-outlined-icon']"));
-
-                        //try
-                        //{
-                        //    IsPhoneExists = ShowPhone(offer, wait, complaintedSellersList, ref complainted);
-                        //    if (!IsPhoneExists) continue;
-                        //}
-                        //catch (Exception)
-                        //{
-                        //    _wrongComplaint++;
-
-                        //    if (_wrongComplaint > randomOffers)
-                        //    {
-                        //        Console.WriteLine($"Что то пошло не так, был превышен лимит попыток нажатия на кнопку {_wrongComplaint} , переподключаюсь...");
-                        //        //_driver.Quit();
-                        //        Thread.Sleep(5000);
-                        //        SendComplaint();
-                        //        return;
-                        //    }
-                        //    continue;
-                        //}
-
-                        //Thread.Sleep(_randomeTimeWating.Next(3000, 4200));
-
-                        //try
-                        //{
-                        //    ReportComplaint(offer, wait, complaintedSellersList, ref complainted);
-                        //}
-                        //catch (Exception) { }
-
-                        //try
-                        //{
-                        //    SubmitComplaint(complainted, wait, complaintedSellersList);
-                        //    //AddToFavorites(offer, wait);
-                        //    //clickedElements.Add(offer);
-                        //    countComplainted++;
-                        //}
-                        //catch (Exception) { }
-
-                        Thread.Sleep(_randomeTimeWating.Next(5000, 12000));
                     }
-                    catch (Exception){ }
-                   
+
+                    Thread.Sleep(_randomeTimeWating.Next(5000, 12000));
 
                     if (clickedElements.Count < totalCount)
                     {
@@ -247,7 +248,7 @@ namespace DomclickComplaint
 
                     }
                 }
-               
+
             } while (clickedElements.Count < totalCount);
 
             Console.WriteLine($"Всего отправлено жалоб - {clickedElements.Count}");
@@ -270,11 +271,10 @@ namespace DomclickComplaint
             {
                 sellerName = offer.FindElement(By.CssSelector(".NNu3K6"));
                 ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", sellerName);
-                complainted.NameSeller = sellerName.Text;
             }
             catch (Exception)
             {
-                complainted.NameSeller = "Unknown";
+
             }
 
             var clickableshowPhoneButton = wait.Until(ExpectedConditions.ElementToBeClickable(showPhoneButton));
@@ -284,9 +284,6 @@ namespace DomclickComplaint
             clickableshowPhoneButton.Click();
 
             Thread.Sleep(_randomeTimeWating.Next(3000, 5000));
-
-            complainted.PhoneSeller = showPhoneButton.Text;
-            //complainted.NameSeller = sellerName.Text;
 
             string fileName = "complaintedSellers.json";
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
@@ -300,19 +297,19 @@ namespace DomclickComplaint
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Ошибка при десериализации файла: " + ex.Message);
+                    Log.Error($"Ошибка при десериализации файла: {ex.Message}");
                 }
             }
 
-            string curSellerName = sellerName.Text;
-            foreach (ComplaintedSellers complaintedSeller in complaintedSellersList)
-            {
-                if (Equals(_sellerName, curSellerName))
-                {
-                    complainted = new();
-                    return true;
-                }
-            }
+            //string curSellerName = sellerName.Text;
+            //foreach (ComplaintedSellers complaintedSeller in complaintedSellersList)
+            //{
+            //    if (Equals(_sellerName, curSellerName))
+            //    {
+            //        complainted = new();
+            //        return true;
+            //    }
+            //}
 
             return false;
         }
@@ -366,31 +363,30 @@ namespace DomclickComplaint
             complaintButton.Click();
             Thread.Sleep(_randomeTimeWating.Next(500, 1500));
 
-            if (complainted.NameSeller != null && complainted.PhoneSeller != null)
-            {
-                string message = $"Жалоба на: {complainted.NameSeller} с номером телефона: {complainted.PhoneSeller}";
-                LogManager.LogMessage(message, _logFileName);
 
-                string fileName = "complaintedSellers.json";
-                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+            string message = $"Адрес объекта: {complainted.ObjectAdress} цена объекта: {complainted.ObjectPrice}";
+            LogManager.LogMessage(message, _logFileName);
 
-                if (File.Exists(filePath))
-                {
-                    string json = File.ReadAllText(filePath);
-                    complaintedSellersList = JsonSerializer.Deserialize<List<ComplaintedSellers>>(json);
-                }
+            //string fileName = "complaintedSellers.json";
+            //string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
 
-                complaintedSellersList?.Add(complainted);
+            //if (File.Exists(filePath))
+            //{
+            //    string json = File.ReadAllText(filePath);
+            //    complaintedSellersList = JsonSerializer.Deserialize<List<ComplaintedSellers>>(json);
+            //}
 
-                JsonSerializerOptions options = new JsonSerializerOptions
-                {
-                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                    WriteIndented = true
-                };
+            //complaintedSellersList?.Add(complainted);
 
-                string jsonString = JsonSerializer.Serialize(complaintedSellersList, options);
-                File.WriteAllText(filePath, jsonString);
-            }
+            //JsonSerializerOptions options = new JsonSerializerOptions
+            //{
+            //    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            //    WriteIndented = true
+            //};
+
+            //string jsonString = JsonSerializer.Serialize(complaintedSellersList, options);
+            //File.WriteAllText(filePath, jsonString);
+
         }
 
         private void InitLogger()

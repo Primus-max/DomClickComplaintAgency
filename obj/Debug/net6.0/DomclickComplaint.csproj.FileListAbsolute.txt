@@ -40,3 +40,5 @@ E:\projects\DomclickComplaint\obj\Debug\net6.0\refint\DomclickComplaint.dll
 E:\projects\DomclickComplaint\obj\Debug\net6.0\DomclickComplaint.pdb
 E:\projects\DomclickComplaint\obj\Debug\net6.0\DomclickComplaint.genruntimeconfig.cache
 E:\projects\DomclickComplaint\obj\Debug\net6.0\ref\DomclickComplaint.dll
+E:\projects\DomclickComplaint\bin\Debug\net6.0\Serilog.dll
+E:\projects\DomclickComplaint\bin\Debug\net6.0\Serilog.Sinks.File.dll

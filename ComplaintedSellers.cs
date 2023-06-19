@@ -8,7 +8,7 @@ namespace DomclickComplaint
 {
     public class ComplaintedSellers
     {
-        public string? NameSeller { get; set; }
-        public string? PhoneSeller { get; set; }
+        public string? ObjectAdress { get; set; }
+        public string? ObjectPrice { get; set; }
     }
 }
