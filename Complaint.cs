@@ -262,70 +262,6 @@ namespace DomclickComplaint
             Thread.Sleep(1000);
         }
 
-        private bool ShowPhone(IWebElement offer, WebDriverWait wait, List<ComplaintedSellers> complaintedSellersList, ref ComplaintedSellers complainted)
-        {
-            IWebElement sellerName = null;
-
-            var showPhoneButton = offer.FindElement(By.CssSelector("button[data-e2e-id='show-curSellerName-button']"));
-
-            try
-            {
-                sellerName = offer.FindElement(By.CssSelector(".NNu3K6"));
-                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", sellerName);
-            }
-            catch (Exception)
-            {
-
-            }
-
-            var clickableshowPhoneButton = wait.Until(ExpectedConditions.ElementToBeClickable(showPhoneButton));
-
-            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", showPhoneButton);
-
-            clickableshowPhoneButton.Click();
-
-            Thread.Sleep(_randomeTimeWating.Next(3000, 5000));
-
-            string fileName = "complaintedSellers.json";
-            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
-
-            if (File.Exists(filePath))
-            {
-                try
-                {
-                    string json = File.ReadAllText(filePath);
-                    complaintedSellersList = JsonSerializer.Deserialize<List<ComplaintedSellers>>(json);
-                }
-                catch (Exception ex)
-                {
-                    Log.Error($"Ошибка при десериализации файла: {ex.Message}");
-                }
-            }
-
-            //string curSellerName = sellerName.Text;
-            //foreach (ComplaintedSellers complaintedSeller in complaintedSellersList)
-            //{
-            //    if (Equals(_sellerName, curSellerName))
-            //    {
-            //        complainted = new();
-            //        return true;
-            //    }
-            //}
-
-            return false;
-        }
-
-        private void AddToFavorites(IWebElement offer, WebDriverWait wait)
-        {
-            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", offer);
-            Thread.Sleep(_randomeTimeWating.Next(700, 1700));
-
-            var setFavoriteOffer = offer.FindElement(By.CssSelector("button[data-e2e-id='product-snippet-favorite']"));
-            var clickableSetFavoriteOffer = wait.Until(ExpectedConditions.ElementToBeClickable(setFavoriteOffer));
-            Thread.Sleep(_randomeTimeWating.Next(500, 1500));
-            clickableSetFavoriteOffer.Click();
-        }
-
         private void ReportComplaint(IWebElement offer, WebDriverWait wait)
         {
             try
@@ -381,7 +317,6 @@ namespace DomclickComplaint
             }
         }
 
-
         private void SubmitComplaint(ComplaintedSellers complainted)
         {
             try
@@ -418,7 +353,6 @@ namespace DomclickComplaint
                 Log.Error($"Ошибка при записи в лог: {ex.Message}");
             }
         }
-
 
         private void InitLogger()
         {
