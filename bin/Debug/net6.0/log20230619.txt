@@ -1,2 +1,172 @@
-2023-06-19 15:12:43.338 +08:00 [ERR] Не удалось получить sellerName no such element: Unable to locate element: {"method":"css selector","selector":".NNu3K6"}
+2023-06-19 15:19:51.742 +08:00 [ERR] Не удалось получить sellerName no such element: Unable to locate element: {"method":"css selector","selector":".NNu3K6"}
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:23:42.832 +08:00 [ERR] Не удалось получить sellerName no such element: Unable to locate element: {"method":"css selector","selector":".NNu3K6"}
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:25:05.142 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:25:09.092 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:25:11.039 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:25:34.324 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:25:34.417 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:25:34.471 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:25:34.509 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:25:34.550 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:25:34.596 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:25:34.636 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:25:34.676 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:25:34.718 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:25:34.769 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:25:34.808 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:25:34.848 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:25:34.901 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:03.864 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:03.919 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:03.971 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.021 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.070 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.122 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.177 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.228 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.279 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.334 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.384 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.432 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.483 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.539 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.590 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.639 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.687 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.744 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.806 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.854 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.905 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:04.970 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:05.024 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:05.072 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:05.134 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:05.188 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:05.239 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:05.294 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:05.341 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:05.392 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:05.441 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:05.504 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:05.555 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:05.623 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:05.674 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:05.723 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:05.775 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:05.833 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:29:05.881 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 15:47:03.021 +08:00 [ERR] Не удалось получить sellerName no such element: Unable to locate element: {"method":"css selector","selector":".NNu3K6"}
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:07:29.876 +08:00 [ERR] Не удалось получить sellerName no such element: Unable to locate element: {"method":"css selector","selector":".NNu3K6"}
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:11:50.498 +08:00 [ERR] Не удалось получить sellerName no such element: Unable to locate element: {"method":"css selector","selector":".NNu3K6"}
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:13:44.359 +08:00 [ERR] Не удалось получить sellerName no such element: Unable to locate element: {"method":"css selector","selector":".NNu3K6"}
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:14:07.701 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:14:07.745 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:14:07.792 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:14:07.833 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:14:07.881 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:14:07.917 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:14:07.969 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:14:08.016 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:14:08.054 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:14:08.110 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:14:08.155 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:14:08.203 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:18:30.290 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:18:30.334 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:18:30.377 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:18:30.421 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:18:30.460 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:18:30.504 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:18:30.546 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:18:30.595 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:18:30.636 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:18:30.684 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:18:30.725 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:18:30.769 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
+  (Session info: chrome=114.0.5735.134)
+2023-06-19 16:18:30.807 +08:00 [ERR] Не удалось получить sellerName stale element reference: stale element not found
   (Session info: chrome=114.0.5735.134)

@@ -161,7 +161,7 @@ namespace DomclickComplaint
 
                     string? sellerNameText = sellerName?.Text;
 
-                    if (Equals(_sellerName, sellerNameText))
+                    if (Equals(_sellerName, sellerNameText) && !clickedElements.Contains(offer))
                     {
 
                         IWebElement? objAdress = null;
@@ -193,7 +193,9 @@ namespace DomclickComplaint
                         complaintedSellers.ObjectPrice = objPrice?.Text;
 
                         ReportComplaint(offer, wait);
-                        SubmitComplaint(complainted);
+                        SubmitComplaint(complaintedSellers);
+
+                        clickedElements.Add(offer);
 
                         countComplainted++;
                     }
@@ -326,47 +328,97 @@ namespace DomclickComplaint
 
         private void ReportComplaint(IWebElement offer, WebDriverWait wait)
         {
-            Thread.Sleep(_randomeTimeWating.Next(1500, 3000));
-            var complaintButton = offer.FindElement(By.CssSelector("button[data-e2e-id='snippet-complaint-button']"));
+            try
+            {
+                Thread.Sleep(_randomeTimeWating.Next(1500, 3000));
+                var complaintButton = offer.FindElement(By.CssSelector("button[data-e2e-id='snippet-complaint-button']"));
 
-            var jsExecutor = (IJavaScriptExecutor)_driver;
-            jsExecutor.ExecuteScript("arguments[0].scrollIntoView(true);", complaintButton);
+                var jsExecutor = (IJavaScriptExecutor)_driver;
+                jsExecutor.ExecuteScript("arguments[0].scrollIntoView(true);", complaintButton);
 
-            Thread.Sleep(_randomeTimeWating.Next(500, 1500));
-            jsExecutor.ExecuteScript("arguments[0].dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));", complaintButton);
+                Thread.Sleep(_randomeTimeWating.Next(500, 1500));
+                jsExecutor.ExecuteScript("arguments[0].dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));", complaintButton);
 
-            Thread.Sleep(_randomeTimeWating.Next(500, 1500));
-            jsExecutor.ExecuteScript("arguments[0].click();", complaintButton);
+                Thread.Sleep(_randomeTimeWating.Next(500, 1500));
+                jsExecutor.ExecuteScript("arguments[0].click();", complaintButton);
+            }
+            catch (NoSuchElementException ex)
+            {
+                Log.Error($"Не удалось найти элемент complaintButton: {ex.Message}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Log.Error($"Недопустимая операция при работе с complaintButton: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Общая ошибка при работе с complaintButton: {ex.Message}");
+            }
 
-            var complaintElement = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class, 'multipleButtonSelect-root') and contains(@class, 'multipleButtonSelect-root--medium')]")));
+            try
+            {
+                var complaintElement = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class, 'multipleButtonSelect-root') and contains(@class, 'multipleButtonSelect-root--medium')]")));
 
-            var complaintOptions = complaintElement.FindElements(By.TagName("label"));
+                var complaintOptions = complaintElement.FindElements(By.TagName("label"));
 
-            var randomIndex = new Random().Next(0, complaintOptions.Count);
+                var randomIndex = new Random().Next(0, complaintOptions.Count);
 
-            var clickableComplaintOption = wait.Until(ExpectedConditions.ElementToBeClickable(complaintOptions[randomIndex]));
-            Thread.Sleep(_randomeTimeWating.Next(500, 1500));
-            clickableComplaintOption.Click();
+                var clickableComplaintOption = wait.Until(ExpectedConditions.ElementToBeClickable(complaintOptions[randomIndex]));
+                Thread.Sleep(_randomeTimeWating.Next(500, 1500));
+                clickableComplaintOption.Click();
+            }
+            catch (NoSuchElementException ex)
+            {
+                Log.Error($"Не удалось найти элементы complaintElement или complaintOptions: {ex.Message}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Log.Error($"Недопустимая операция при работе с complaintElement или complaintOptions: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Общая ошибка при работе с complaintElement или complaintOptions: {ex.Message}");
+            }
         }
+
 
         private void SubmitComplaint(ComplaintedSellers complainted)
         {
-            Thread.Sleep(_randomeTimeWating.Next(1500, 3000));
+            try
+            {
+                Thread.Sleep(_randomeTimeWating.Next(1500, 3000));
 
-            // data-e2e-id="heart-icon"
+                var complaintButton = _driver.FindElement(By.CssSelector(".modal-footer-button-14-0-1"));
 
-            var complaintButton = _driver.FindElement(By.CssSelector(".modal-footer-button-14-0-1"));
+                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", complaintButton);
+                Thread.Sleep(_randomeTimeWating.Next(500, 1500));
+                complaintButton.Click();
+                Thread.Sleep(_randomeTimeWating.Next(500, 1500));
+            }
+            catch (NoSuchElementException ex)
+            {
+                Log.Error($"Не удалось найти элемент complaintButton: {ex.Message}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Log.Error($"Недопустимая операция при работе с complaintButton: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Общая ошибка при работе с complaintButton: {ex.Message}");
+            }
 
-            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", complaintButton);
-            Thread.Sleep(_randomeTimeWating.Next(500, 1500));
-            complaintButton.Click();
-            Thread.Sleep(_randomeTimeWating.Next(500, 1500));
-
-
-            string message = $"Адрес объекта: {complainted.ObjectAdress} цена объекта: {complainted.ObjectPrice}";
-            LogManager.LogMessage(message, _logFileName);
-
+            try
+            {
+                string message = $"Адрес объекта: {complainted.ObjectAdress} цена объекта: {complainted.ObjectPrice}";
+                LogManager.LogMessage(message, _logFileName);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Ошибка при записи в лог: {ex.Message}");
+            }
         }
+
 
         private void InitLogger()
         {
