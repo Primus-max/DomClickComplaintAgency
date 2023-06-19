@@ -192,8 +192,8 @@ namespace DomclickComplaint
                         complaintedSellers.ObjectAdress = objAdress?.Text;
                         complaintedSellers.ObjectPrice = objPrice?.Text;
 
-                        ReportComplaint(offer, wait, complaintedSellersList, ref complainted);
-                        SubmitComplaint(complainted, wait, complaintedSellersList);
+                        ReportComplaint(offer, wait);
+                        SubmitComplaint(complainted);
 
                         countComplainted++;
                     }
@@ -242,7 +242,6 @@ namespace DomclickComplaint
                             }
 
                             var clickableLoadingElement = wait.Until(ExpectedConditions.ElementToBeClickable(loadingElement));
-                            //clickableLoadingElement.Click();
                         }
                         catch (Exception) { }
 
@@ -325,7 +324,7 @@ namespace DomclickComplaint
             clickableSetFavoriteOffer.Click();
         }
 
-        private void ReportComplaint(IWebElement offer, WebDriverWait wait, List<ComplaintedSellers> complaintedSellersList, ref ComplaintedSellers complainted)
+        private void ReportComplaint(IWebElement offer, WebDriverWait wait)
         {
             Thread.Sleep(_randomeTimeWating.Next(1500, 3000));
             var complaintButton = offer.FindElement(By.CssSelector("button[data-e2e-id='snippet-complaint-button']"));
@@ -350,7 +349,7 @@ namespace DomclickComplaint
             clickableComplaintOption.Click();
         }
 
-        private void SubmitComplaint(ComplaintedSellers complainted, WebDriverWait wait, List<ComplaintedSellers>? complaintedSellersList)
+        private void SubmitComplaint(ComplaintedSellers complainted)
         {
             Thread.Sleep(_randomeTimeWating.Next(1500, 3000));
 
@@ -366,26 +365,6 @@ namespace DomclickComplaint
 
             string message = $"Адрес объекта: {complainted.ObjectAdress} цена объекта: {complainted.ObjectPrice}";
             LogManager.LogMessage(message, _logFileName);
-
-            //string fileName = "complaintedSellers.json";
-            //string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
-
-            //if (File.Exists(filePath))
-            //{
-            //    string json = File.ReadAllText(filePath);
-            //    complaintedSellersList = JsonSerializer.Deserialize<List<ComplaintedSellers>>(json);
-            //}
-
-            //complaintedSellersList?.Add(complainted);
-
-            //JsonSerializerOptions options = new JsonSerializerOptions
-            //{
-            //    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            //    WriteIndented = true
-            //};
-
-            //string jsonString = JsonSerializer.Serialize(complaintedSellersList, options);
-            //File.WriteAllText(filePath, jsonString);
 
         }
 
